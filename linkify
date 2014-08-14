@@ -16,6 +16,4 @@ def linkify source_path, target_path
     end
   end
 end
-
-
-linkify File.join( File.dirname(__FILE__), 'home'), ENV['HOME']
+linkify File.join( File.expand_path(File.dirname(__FILE__)), 'home' ), ENV['HOME']
