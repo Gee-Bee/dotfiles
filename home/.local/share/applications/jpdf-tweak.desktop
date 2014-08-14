@@ -1,0 +1,8 @@
+[Desktop Entry]
+Comment=
+Terminal=false
+Name=jPDF Tweak
+Exec=java -jar /home/gb/Copy/Apps/jpdf_tweak/jpdftweak.jar
+Type=Application
+Icon=/home/gb/Copy/Apps/jpdf_tweak/icons/icon256.png
+Categories=Office
