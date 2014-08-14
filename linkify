@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require_relative '.linkify_helper'
+
+linkify dotfiles_directory('home'), home_directory
