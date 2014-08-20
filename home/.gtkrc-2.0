@@ -1,0 +1,25 @@
+gtk-menu-popup-delay = 0
+gtk-menu-popdown-delay = 0
+gtk-menu-bar-popup-delay = 0
+gtk-enable-animations = 0
+gtk-timeout-expand = 10
+
+style "xfce-tasklist-style"
+{
+  # The maximum length of a button before the label ellipsizes.
+  # When this value is set to -1 the button will expand to the
+  # entire available space.
+  XfceTasklist::max-button-length = 400
+ 
+  # Ellipsizing used in the task list and overflow menu labels.
+  XfceTasklist::ellipsize-mode = PANGO_ELLIPSIZE_END
+ 
+  # Lucency of minimized icons. Valid values are between 0 (completely
+  # hide the icon) and 100 (don't lighten the icon).
+  XfceTasklist::minimized-icon-lucency = 50
+ 
+  # Maximum number of characters in the menu label before it will
+  # be ellipsized.
+  XfceTasklist::menu-max-width-chars = 24
+}
+class "XfceTasklist" style "xfce-tasklist-style"
