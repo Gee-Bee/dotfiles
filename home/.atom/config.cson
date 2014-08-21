@@ -1,0 +1,11 @@
+'welcome':
+  'showOnStartup': false
+'editor':
+  'fontSize': 13
+'whitespace':
+  'ignoreWhitespaceOnCurrentLine': false
+'core': {}
+'exception-reporting':
+  'userId': 'd9777ac5-6447-d222-28d7-550e27b138c8'
+'metrics':
+  'userId': 'ef30476e655c54fa74d8395d7b02552b7ebcc66a'

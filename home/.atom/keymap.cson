@@ -1,0 +1,2 @@
+".platform-linux .editor":
+ "ctrl-d": "find-and-replace:select-next"
