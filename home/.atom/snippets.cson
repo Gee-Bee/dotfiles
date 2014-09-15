@@ -1,0 +1,9 @@
+# HTML
+'.text.html':
+  'html5':
+    'prefix': 'html5'
+    'body': "<!DOCTYPE html>\n<html lang='en'>\n\t<head>\n\t\t<meta charset='utf-8'>>\n\t\t<meta http-equiv='X-UA-Compatible' cotent='IE=edge,chrome=1'>\n\t\t<meta name='viewport' content='width=device-width,initial-scale=1.0'>$1\n\t</head>\n\t<body>\n\t\t$2\n\t</body>\n</html>"
+'.text.html:not(.text.blog)':
+  'html imports':
+    'prefix': 'impt'
+    'body': "<link rel='import' href='$1'"
