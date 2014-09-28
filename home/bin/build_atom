@@ -22,4 +22,4 @@ sudo mv -f /tmp/$USER/atom-build/Atom /opt/
 rm -rf $HOME/node_modules
 sudo yum remove -y nodejs npm
 sudo yum install -y nodejs npm
-sudo ln -s /opt/Atom/resources/app/atom.sh /usr/local/bin/atom 
+sudo ln -sf /opt/Atom/resources/app/atom.sh /usr/local/bin/atom
