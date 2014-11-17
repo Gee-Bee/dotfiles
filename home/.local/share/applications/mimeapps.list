@@ -1,10 +1,12 @@
 [Default Applications]
-text/plain=mousepad.desktop
 x-scheme-handler/http=exo-web-browser.desktop
 x-scheme-handler/https=exo-web-browser.desktop
+text/html=exo-web-browser.desktop
+text/plain=leafpad.desktop
 
 [Added Associations]
-text/plain=mousepad.desktop
 x-scheme-handler/http=exo-web-browser.desktop
 x-scheme-handler/https=exo-web-browser.desktop
-
+x-scheme-handler/mailto=exo-mail-reader.desktop
+text/html=exo-web-browser.desktop
+text/plain=leafpad.desktop
