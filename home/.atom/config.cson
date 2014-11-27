@@ -12,6 +12,8 @@
     'userId': 'ef30476e655c54fa74d8395d7b02552b7ebcc66a'
   'linter-coffeelint':
     'coffeelintConfigPath': '~/.atom'
-  'core': {}
-  'atom-beautify':
-    '_analyticsUserId': '4aabdb89-adb4-4a64-bd09-b9edbca7bac6'
+  'atom-ctags':
+    'autoBuildTagsWhenActive': true
+    'cmdArgs': '-R .'
+  'core':
+    'autoHideMenuBar': true
