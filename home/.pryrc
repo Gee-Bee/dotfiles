@@ -17,13 +17,10 @@ end
 Debundle.debundle!
 ### END debundle.rb ###
 
+`gem install awesome_print` unless defined? AwesomePrint
 require "awesome_print"
 AwesomePrint.pry!
 
-require 'hirb'
-Hirb.enable
-
-old_print = Pry.config.print
-Pry.config.print = proc do |*args|
-  Hirb::View.view_or_page_output(args[1]) || old_print.call(*args)
-end
+`gem install hirb` unless defined? Hirb
+require "hirb"
+extend Hirb::Console
