@@ -17,10 +17,10 @@ end
 Debundle.debundle!
 ### END debundle.rb ###
 
-`gem install awesome_print` unless defined? AwesomePrint
+`gem install awesome_print` if !defined?(AwesomePrint)
 require "awesome_print"
 AwesomePrint.pry!
 
-`gem install hirb` unless defined? Hirb
+#`gem install hirb` if !defined?(Hirb)
 require "hirb"
 extend Hirb::Console
