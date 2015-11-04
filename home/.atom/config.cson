@@ -19,3 +19,5 @@
   "rails-transporter":
     viewFileExtension: "html.haml"
   linter: {}
+  whitespace:
+    ignoreWhitespaceOnCurrentLine: false
