@@ -13,6 +13,16 @@
   core:
     autoHideMenuBar: true
     excludeVcsIgnoredPaths: false
+    ignoredNames: [
+      ".git"
+      ".hg"
+      ".svn"
+      ".DS_Store"
+      "._*"
+      "Thumbs.db"
+      "tmp/**"
+      "log/**"
+    ]
   tabs:
     usePreviewTabs: true
     enableVcsColoring: true
