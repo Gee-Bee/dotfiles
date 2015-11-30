@@ -23,7 +23,6 @@
       "tmp/**"
       "log/**"
       "vendor/**"
-      "db/**"
     ]
   tabs:
     usePreviewTabs: true
@@ -33,3 +32,4 @@
   linter: {}
   whitespace:
     ignoreWhitespaceOnCurrentLine: false
+  "fuzzy-finder": {}
