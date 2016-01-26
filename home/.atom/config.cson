@@ -1,15 +1,4 @@
 "*":
-  welcome:
-    showOnStartup: false
-  editor:
-    invisibles: {}
-    fontSize: 12
-  "exception-reporting":
-    userId: "d9777ac5-6447-d222-28d7-550e27b138c8"
-  metrics:
-    userId: "ef30476e655c54fa74d8395d7b02552b7ebcc66a"
-  "linter-coffeelint":
-    coffeelintConfigPath: "~/.atom"
   core:
     autoHideMenuBar: true
     excludeVcsIgnoredPaths: false
@@ -24,12 +13,29 @@
       "log/**"
       "vendor/**"
     ]
-  tabs:
-    usePreviewTabs: true
-    enableVcsColoring: true
+  editor:
+    fontSize: 12
+    invisibles: {}
+  "exception-reporting":
+    userId: "d9777ac5-6447-d222-28d7-550e27b138c8"
+  "fuzzy-finder": {}
+  "language-elm":
+    elmOraclePath: "/usr/bin/elm-oracle"
+  linter: {}
+  "linter-coffeelint":
+    coffeelintConfigPath: "~/.atom"
+  metrics:
+    userId: "ef30476e655c54fa74d8395d7b02552b7ebcc66a"
+  "package-sync":
+    forceOverwrite: true
   "rails-transporter":
     viewFileExtension: "html.haml"
-  linter: {}
+  tabs:
+    enableVcsColoring: true
+    usePreviewTabs: true
+  "tree-view":
+    showOnRightSide: true
+  welcome:
+    showOnStartup: false
   whitespace:
     ignoreWhitespaceOnCurrentLine: false
-  "fuzzy-finder": {}

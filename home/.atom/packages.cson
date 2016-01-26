@@ -1,0 +1,11 @@
+packages: [
+  "atom-zeal"
+  "file-icons"
+  "language-elm"
+  "language-slim"
+  "linter"
+  "package-sync"
+  "rails-transporter"
+  "split-diff"
+  "tabularize"
+]

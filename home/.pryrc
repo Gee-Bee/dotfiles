@@ -33,3 +33,5 @@ def generate_tags
   end
   %x(ctags -R --languages=ruby --exclude=.git --exclude=log . #{relative_gem_paths.join(" ")})
 end
+
+Pry::Commands.rename_command("nxt", "next")
