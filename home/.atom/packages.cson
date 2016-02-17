@@ -1,9 +1,11 @@
 packages: [
   "atom-zeal"
   "file-icons"
+  "language-docker"
   "language-elm"
   "language-slim"
   "linter"
+  "linter-elm-make"
   "package-sync"
   "rails-transporter"
   "split-diff"
