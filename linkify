@@ -4,16 +4,16 @@ require 'fileutils'
 require 'pathname'
 
 # Recursively link files from source to target directory
-def linkify source_path, target_path
-  Dir.glob( File.join(source_path, '*'), File::FNM_DOTMATCH ).each do |src_fn_path|
-    src_pn = Pathname.new src_fn_path
-    next if %w(. ..).include? src_pn.basename.to_s
-    if src_pn.directory?
-      FileUtils.mkdir_p File.join(target_path, src_pn.basename)
-      linkify File.join(source_path, src_pn.basename), File.join(target_path, src_pn.basename)
+def linkify source_pn, target_dir_pn
+  source_pn.children.each do |child_pn|
+    target_pn = target_dir_pn + child_pn.basename
+    if child_pn.directory?
+      FileUtils.mkdir_p target_pn
+      linkify child_pn, target_pn
     else
-      FileUtils.ln_s src_pn, File.join(target_path, src_pn.basename), force: true
+      FileUtils.ln_s child_pn, target_pn, force: true
     end
   end
 end
-linkify File.join( File.expand_path(File.dirname(__FILE__)), 'home' ), ENV['HOME']
+
+linkify Pathname(__dir__) + 'home', Pathname(ENV['HOME'])

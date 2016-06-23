@@ -1,4 +1,7 @@
 "*":
+  "atom-beautify":
+    general:
+      _analyticsUserId: "11fcb4db-45c3-4061-93c7-b5ea70377a3b"
   core:
     autoHideMenuBar: true
     excludeVcsIgnoredPaths: false
@@ -14,6 +17,7 @@
       "vendor/**"
     ]
   editor:
+    fontSize: 13
     invisibles: {}
     showIndentGuide: true
   "exception-reporting":
