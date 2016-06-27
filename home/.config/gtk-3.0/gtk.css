@@ -1,9 +1,11 @@
-.header-bar.default-decoration {
-    padding-top: 3px;
-    padding-bottom: 3px;
+headerbar.default-decoration {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  min-height: 20px;
+  font-size: 0.75em;
 }
 
-.header-bar.default-decoration .button.titlebutton {
-    padding-top: 2px;
-    padding-bottom: 2px;
+headerbar.default-decoration button.titlebutton {
+  padding: 0px;
+  min-height: 0px;
 }
