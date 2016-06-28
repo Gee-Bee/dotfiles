@@ -23,3 +23,8 @@
   'ctrl-t a':   'rails-transporter:open-asset'
   'ctrl-t d m': 'rails-transporter:open-migration-finder'
   'ctrl-t f':   'rails-transporter:open-factory'
+'body':
+  'ctrl-tab ^ctrl': 'unset!'
+  'ctrl-tab': 'pane:show-next-item'
+  'ctrl-shift-tab ^ctrl': 'unset!'
+  'ctrl-shift-tab': 'pane:show-previous-item'
