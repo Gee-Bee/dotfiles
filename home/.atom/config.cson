@@ -1,7 +1,9 @@
 "*":
   "atom-beautify":
+    elm:
+      beautify_on_save: true
     general:
-      _analyticsUserId: "11fcb4db-45c3-4061-93c7-b5ea70377a3b"
+      analytics: false
   core:
     autoHideMenuBar: true
     excludeVcsIgnoredPaths: false
@@ -28,6 +30,7 @@
   linter: {}
   "linter-coffeelint":
     coffeelintConfigPath: "~/.atom"
+  "linter-elm-make": {}
   metrics:
     userId: "ef30476e655c54fa74d8395d7b02552b7ebcc66a"
   "package-sync":
