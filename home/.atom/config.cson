@@ -18,6 +18,11 @@
       "log/**"
       "vendor/**"
     ]
+    telemetryConsent: "no"
+    themes: [
+      "one-light-ui"
+      "one-light-syntax"
+    ]
   editor:
     fontSize: 13
     invisibles: {}
@@ -31,8 +36,12 @@
   "linter-coffeelint":
     coffeelintConfigPath: "~/.atom"
   "linter-elm-make": {}
+  "linter-ui-default": {}
   metrics:
     userId: "ef30476e655c54fa74d8395d7b02552b7ebcc66a"
+  "one-light-ui":
+    layoutMode: "Spacious"
+    tabSizing: "Minimum"
   "package-sync":
     forceOverwrite: true
   "rails-transporter": {}
