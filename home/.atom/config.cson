@@ -6,6 +6,10 @@
       analytics: false
   core:
     autoHideMenuBar: true
+    disabledPackages: [
+      "markdown-scroll-sync"
+      "tabularize"
+    ]
     excludeVcsIgnoredPaths: false
     ignoredNames: [
       ".git"
@@ -14,9 +18,9 @@
       ".DS_Store"
       "._*"
       "Thumbs.db"
-      "tmp/**"
-      "log/**"
-      "vendor/**"
+      "**/tmp/**"
+      "**/log/**"
+      "**/vendor/**"
     ]
     telemetryConsent: "no"
     themes: [
@@ -24,7 +28,6 @@
       "one-light-syntax"
     ]
   editor:
-    fontSize: 13
     invisibles: {}
     showIndentGuide: true
   "exception-reporting":
@@ -36,15 +39,20 @@
   "linter-coffeelint":
     coffeelintConfigPath: "~/.atom"
   "linter-elm-make": {}
-  "linter-ui-default": {}
+  "linter-ui-default":
+    panelHeight: 69
+    showPanel: true
   metrics:
     userId: "ef30476e655c54fa74d8395d7b02552b7ebcc66a"
   "one-light-ui":
-    layoutMode: "Spacious"
     tabSizing: "Minimum"
   "package-sync":
+    createOnChange: true
     forceOverwrite: true
   "rails-transporter": {}
+  "split-diff":
+    colors: {}
+    ignoreWhitespace: true
   tabs:
     enableVcsColoring: true
     usePreviewTabs: true

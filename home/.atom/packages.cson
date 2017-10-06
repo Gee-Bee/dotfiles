@@ -1,7 +1,9 @@
 packages: [
   "atom-beautify"
-  "atom-handlebars"
+  "atom-typescript"
+  "busy-signal"
   "file-icons"
+  "intentions"
   "language-docker"
   "language-elm"
   "language-haml"
@@ -9,9 +11,9 @@ packages: [
   "language-slim"
   "linter"
   "linter-elm-make"
+  "linter-ui-default"
   "markdown-scroll-sync"
   "package-sync"
-  "rails-transporter"
   "split-diff"
   "tabularize"
 ]
