@@ -27,6 +27,10 @@
       "one-light-ui"
       "one-light-syntax"
     ]
+    customFileTypes:
+      'source.shell': [
+        'env'
+      ]
   editor:
     invisibles: {}
     showIndentGuide: true
