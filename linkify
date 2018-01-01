@@ -3,6 +3,8 @@
 require 'fileutils'
 require 'pathname'
 
+script_dir = Pathname(__dir__)
+
 # Recursively link files from source to target directory
 def linkify source_pn, target_dir_pn
   source_pn.children.each do |child_pn|
@@ -16,4 +18,7 @@ def linkify source_pn, target_dir_pn
   end
 end
 
-linkify Pathname(__dir__) + 'home', Pathname(ENV['HOME'])
+linkify script_dir + 'home', Pathname(ENV['HOME'])
+
+# Chmod
+FileUtils.chmod '+x', Dir.glob( script_dir + 'home' + 'bin' + '*' )

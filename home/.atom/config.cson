@@ -6,6 +6,10 @@
       analytics: false
   core:
     autoHideMenuBar: true
+    customFileTypes:
+      "source.shell": [
+        "env"
+      ]
     disabledPackages: [
       "markdown-scroll-sync"
       "tabularize"
@@ -27,10 +31,6 @@
       "one-light-ui"
       "one-light-syntax"
     ]
-    customFileTypes:
-      'source.shell': [
-        'env'
-      ]
   editor:
     invisibles: {}
     showIndentGuide: true

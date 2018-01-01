@@ -1,0 +1,20 @@
+#!/bin/sh
+usage() {
+  echo "Usage: $(basename $0) Firefox [Chrome ...]"
+  exit 1
+}
+[ $# -lt 1 ] && usage
+
+if ! command -v xdotool > /dev/null; then
+  echo 'Install xdotool'
+  exit 1
+fi
+
+for app in "$@"
+do
+  CUR_WID=$(xdotool getwindowfocus)
+  WID=$(xdotool search --onlyvisible --class "$app"|head -1)
+  xdotool windowactivate $WID
+  xdotool key 'ctrl+r'
+  xdotool windowactivate $CUR_WID 2>/dev/null
+done
