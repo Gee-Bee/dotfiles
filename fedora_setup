@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+if ! grep -q "fs.inotify.max_user_watches=" "/etc/sysctl.conf"; then
+    echo "fs.inotify.max_user_watches=524288" >> "/etc/sysctl.conf"
+    sysctl -p
+fi
