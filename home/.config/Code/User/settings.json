@@ -1,6 +1,14 @@
 {
     "editor.fontFamily": "Liga Hack",
+    "terminal.integrated.fontFamily": "Liga Hack",
     "editor.fontLigatures": true,
     "workbench.colorTheme": "Tomorrow Night Eighties",
-    "window.menuBarVisibility": "toggle"
+    "window.menuBarVisibility": "toggle",
+    "editor.tabSize": 2,
+    "window.zoomLevel": 0,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "files.associations": {
+        "*.coffee.erb": "coffeescript"
+    },
 }
