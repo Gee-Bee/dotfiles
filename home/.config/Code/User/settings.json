@@ -11,4 +11,5 @@
     "files.associations": {
         "*.coffee.erb": "coffeescript"
     },
+    "explorer.confirmDelete": false,
 }
