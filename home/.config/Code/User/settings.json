@@ -12,4 +12,5 @@
         "*.coffee.erb": "coffeescript"
     },
     "explorer.confirmDelete": false,
+    "window.titleBarStyle": "native",
 }
