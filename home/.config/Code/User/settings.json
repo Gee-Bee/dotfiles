@@ -13,4 +13,6 @@
     },
     "explorer.confirmDelete": false,
     "window.titleBarStyle": "native",
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
 }
