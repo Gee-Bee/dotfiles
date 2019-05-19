@@ -1,11 +1,28 @@
 #!/usr/bin/env bash
 
+
+### /etc/sysctl.conf
 if ! grep -q "fs.inotify.max_user_watches=" "/etc/sysctl.conf"; then
     echo "fs.inotify.max_user_watches=524288" >> "/etc/sysctl.conf"
     sysctl -p
 fi
-
 if ! grep -q "vm.max_map_count=" "/etc/sysctl.conf"; then
     echo "vm.max_map_count=262144" >> "/etc/sysctl.conf"
     sysctl -p
 fi
+###
+
+### /etc/dnf/dnf.conf
+if ! grep -q "fastestmirror=" "/etc/dnf/dnf.conf"; then
+    echo "fastestmirror=True" >> "/etc/dnf/dnf.conf"
+fi
+if ! grep -q "max_parallel_downloads=" "/etc/dnf/dnf.conf"; then
+    echo "max_parallel_downloads=10" >> "/etc/dnf/dnf.conf"
+fi
+if ! grep -q "keepcache=" "/etc/dnf/dnf.conf"; then
+    echo "keepcache=True" >> "/etc/dnf/dnf.conf"
+fi
+if ! grep -q "metadata_timer_sync=" "/etc/dnf/dnf.conf"; then
+    echo "metadata_timer_sync=0" >> "/etc/dnf/dnf.conf"
+fi
+###
