@@ -26,3 +26,22 @@ if ! grep -q "metadata_timer_sync=" "/etc/dnf/dnf.conf"; then
     echo "metadata_timer_sync=0" >> "/etc/dnf/dnf.conf"
 fi
 ###
+
+### DNS configuration - unbound
+if ! command -v unbound > /dev/null 2>&1; then
+  dnf install -y unbound
+fi
+echo -e "[main]\ndns=unbound" > /etc/NetworkManager/conf.d/dns.conf
+cat <<EOT > /etc/unbound/conf.d/dns-over-tls.conf
+server:
+    tls-cert-bundle: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+forward-zone:
+    name: "."
+    forward-tls-upstream: yes
+    forward-addr: 8.8.8.8@853#dns.google
+    forward-addr: 8.8.4.4@853#dns.google
+EOT
+systemctl disable --now systemd-resolved
+systemctl enable --now unbound
+systemctl restart NetworkManager
+###
