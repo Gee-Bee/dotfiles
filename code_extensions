@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+### VSCode extensions
+if command -v code > /dev/null 2>&1; then
+  extensions=(
+    'ms-vscode.theme-tomorrowkit'
+    'cmstead.jsrefactor'
+  )
+  for extension in ${extensions[@]}; do
+    code --install-extension $extension;
+  done
+fi
+###
