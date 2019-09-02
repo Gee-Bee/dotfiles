@@ -31,7 +31,11 @@ fi
 if ! command -v unbound > /dev/null 2>&1; then
   dnf install -y unbound
 fi
+if ! command -v dnssec-triggerd > /dev/null 2>&1; then
+  dnf install -y dnssec-trigger
+fi
 echo -e "[main]\ndns=unbound" > /etc/NetworkManager/conf.d/dns.conf
+if ! [ -e /etc/unbound/conf.d/dns-over-tls.conf ]; then
 cat <<EOT > /etc/unbound/conf.d/dns-over-tls.conf
 server:
     tls-cert-bundle: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
@@ -41,7 +45,11 @@ forward-zone:
     forward-addr: 8.8.8.8@853#dns.google
     forward-addr: 8.8.4.4@853#dns.google
 EOT
+fi
 systemctl disable --now systemd-resolved
 systemctl enable --now unbound
+systemctl enable --now dnssec-triggerd
+systemctl restart unbound
+systemctl restart dnssec-triggerd
 systemctl restart NetworkManager
 ###
