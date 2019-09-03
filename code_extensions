@@ -4,7 +4,7 @@
 if command -v code > /dev/null 2>&1; then
   extensions=(
     'ms-vscode.theme-tomorrowkit'
-    'cmstead.jsrefactor'
+    'pustelto.bracketeer'
   )
   for extension in ${extensions[@]}; do
     code --install-extension $extension;
