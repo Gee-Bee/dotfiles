@@ -6,6 +6,8 @@ if command -v code > /dev/null 2>&1; then
     'ms-vscode.theme-tomorrowkit'
     'pustelto.bracketeer'
     'humao.rest-client'
+    'mhutchie.git-graph'
+    'dbaeumer.vscode-eslint'
   )
   for extension in ${extensions[@]}; do
     code --install-extension $extension;

@@ -15,4 +15,8 @@
     "window.titleBarStyle": "native",
     "telemetry.enableCrashReporter": false,
     "telemetry.enableTelemetry": false,
+    "gitlens.hovers.currentLine.over": "line",
+    "gitlens.currentLine.enabled": false,
+    "gitlens.codeLens.enabled": false,
+    "diffEditor.renderSideBySide": true,
 }
