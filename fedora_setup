@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+### /etc/dnf/dnf.conf
+if ! grep -q "fastestmirror=" "/etc/dnf/dnf.conf"; then
+    echo "fastestmirror=True" >> "/etc/dnf/dnf.conf"
+fi
+if ! grep -q "max_parallel_downloads=" "/etc/dnf/dnf.conf"; then
+    echo "max_parallel_downloads=10" >> "/etc/dnf/dnf.conf"
+fi
+if ! grep -q "keepcache=" "/etc/dnf/dnf.conf"; then
+    echo "keepcache=True" >> "/etc/dnf/dnf.conf"
+fi
+if ! grep -q "metadata_timer_sync=" "/etc/dnf/dnf.conf"; then
+    echo "metadata_timer_sync=0" >> "/etc/dnf/dnf.conf"
+fi
+###
 
 ### /etc/sysctl.conf
 if ! grep -q "fs.inotify.max_user_watches=" "/etc/sysctl.conf"; then
@@ -16,44 +30,47 @@ if ! grep -q "vm.swappiness=" "/etc/sysctl.conf"; then
 fi
 ###
 
-### /etc/dnf/dnf.conf
-if ! grep -q "fastestmirror=" "/etc/dnf/dnf.conf"; then
-    echo "fastestmirror=True" >> "/etc/dnf/dnf.conf"
-fi
-if ! grep -q "max_parallel_downloads=" "/etc/dnf/dnf.conf"; then
-    echo "max_parallel_downloads=10" >> "/etc/dnf/dnf.conf"
-fi
-if ! grep -q "keepcache=" "/etc/dnf/dnf.conf"; then
-    echo "keepcache=True" >> "/etc/dnf/dnf.conf"
-fi
-if ! grep -q "metadata_timer_sync=" "/etc/dnf/dnf.conf"; then
-    echo "metadata_timer_sync=0" >> "/etc/dnf/dnf.conf"
-fi
+### install base packages
+dnf install -y vim git gitk
 ###
 
-### DNS configuration - unbound
-if ! command -v unbound > /dev/null 2>&1; then
-  dnf install -y unbound
+## install docker and docker-compose
+dnf install -y docker docker-compose
+## add current user to docker group (run docker without sudo)
+groupadd docker
+gpasswd -a $(logname) docker
+## configure docker storage dir
+docker_dir=/home/docker
+mkdir -p /etc/docker ${docker_dir}
+cat <<EOF > /etc/docker/daemon.json
+{
+    "data-root": "${docker_dir}"
+}
+EOF
+semanage fcontext -a -e /var/lib/docker ${docker_dir}
+restorecon -R ${docker_dir}
+## switch to cgroup1 v1 until docker supports v2
+dnf install -y grubby
+grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
+##
+systemctl enable --now docker
+###
+
+### RPMFusion and multimedia codecs
+dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+dnf groupupdate -y core
+dnf groupupdate -y multimedia --setop="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
+dnf groupupdate -y sound-and-video
+dnf install -y rpmfusion-free-release-tainted
+dnf install -y libdvdcss
+###
+
+### DNS configuration - knot-resolver
+if ! command -v kresd > /dev/null 2>&1; then
+  dnf install -y knot-resolver
 fi
-if ! command -v dnssec-triggerd > /dev/null 2>&1; then
-  dnf install -y dnssec-trigger
-fi
-echo -e "[main]\ndns=unbound" > /etc/NetworkManager/conf.d/dns.conf
-if ! [ -e /etc/unbound/conf.d/dns-over-tls.conf ]; then
-cat <<EOT > /etc/unbound/conf.d/dns-over-tls.conf
-server:
-    tls-cert-bundle: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
-forward-zone:
-    name: "."
-    forward-tls-upstream: yes
-    forward-addr: 8.8.8.8@853#dns.google
-    forward-addr: 8.8.4.4@853#dns.google
-EOT
-fi
+echo -e "[main]\ndns=none" > /etc/NetworkManager/conf.d/dns.conf
+echo -e "nameserver 127.0.0.1\n#nameserver 1.1.1.1" > /etc/resolv.conf
 systemctl disable --now systemd-resolved
-systemctl enable --now unbound
-systemctl enable --now dnssec-triggerd
-systemctl restart unbound
-systemctl restart dnssec-triggerd
-systemctl restart NetworkManager
+systemctl enable --now kresd@1.service
 ###
