@@ -20,6 +20,12 @@ fedora_setup:
 code_extensions:
 	./code_extensions
 
+zprezto:
+	sudo dnf install -y zsh git
+	git clone --recursive git@github.com:Gee-Bee/prezto.git ~/.zprezto
+	make -C ~/.zprezto
+	chsh -s /bin/zsh
+
 clean:
 	rm -rf $(destfiles)
 
