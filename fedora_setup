@@ -69,6 +69,17 @@ dnf install -y rpmfusion-free-release-tainted
 dnf install -y libdvdcss
 ###
 
+### Google Chrome
+rpm --import https://dl-ssl.google.com/linux/linux_signing_key.pub
+dnf -y install https://dl.google.com/linux/direct/google-chrome-stable_current_$(uname -i).rpm
+###
+
+### Visual Studio Code
+rpm --import https://packages.microsoft.com/keys/microsoft.asc
+echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo
+dnf -y install code
+###
+
 ### DNS configuration - knot-resolver
 if ! command -v kresd > /dev/null 2>&1; then
   dnf install -y knot-resolver
