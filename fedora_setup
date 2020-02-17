@@ -34,6 +34,11 @@ fi
 dnf install -y vim git gitk zsh most cascadia-code-fonts
 ###
 
+### setup git
+git config --global status.submodulesummary true
+git config --global diff.submodule log
+###
+
 ## install docker and docker-compose
 dnf install -y docker docker-compose
 ## add current user to docker group (run docker without sudo)
