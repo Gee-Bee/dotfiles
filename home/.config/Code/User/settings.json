@@ -1,6 +1,6 @@
 {
-    "editor.fontFamily": "Hack Nerd Font Mono",
-    "terminal.integrated.fontFamily": "Source Code Pro",
+    "editor.fontFamily": "Cascadia Code",
+    "terminal.integrated.fontFamily": "Cascadia Code",
     "editor.fontLigatures": true,
     "workbench.colorTheme": "Tomorrow Night Eighties",
     "window.menuBarVisibility": "toggle",
@@ -19,4 +19,5 @@
     "gitlens.currentLine.enabled": false,
     "gitlens.codeLens.enabled": false,
     "diffEditor.renderSideBySide": true,
+    "terminal.integrated.shell.linux": "/bin/bash",
 }

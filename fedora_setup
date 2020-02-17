@@ -31,7 +31,7 @@ fi
 ###
 
 ### install base packages
-dnf install -y vim git gitk
+dnf install -y vim git gitk zsh most cascadia-code-fonts
 ###
 
 ## install docker and docker-compose
