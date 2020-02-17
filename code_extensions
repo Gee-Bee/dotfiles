@@ -8,6 +8,7 @@ if command -v code > /dev/null 2>&1; then
     'humao.rest-client'
     'mhutchie.git-graph'
     'dbaeumer.vscode-eslint'
+    'mikestead.dotenv'
   )
   for extension in ${extensions[@]}; do
     code --install-extension $extension;

@@ -18,20 +18,18 @@ fi
 ### /etc/sysctl.conf
 if ! grep -q "fs.inotify.max_user_watches=" "/etc/sysctl.conf"; then
     echo "fs.inotify.max_user_watches=524288" >> "/etc/sysctl.conf"
-    sysctl -p
 fi
 if ! grep -q "vm.max_map_count=" "/etc/sysctl.conf"; then
     echo "vm.max_map_count=262144" >> "/etc/sysctl.conf"
-    sysctl -p
 fi
 if ! grep -q "vm.swappiness=" "/etc/sysctl.conf"; then
     echo "vm.swappiness=1" >> "/etc/sysctl.conf"
-    sysctl -p
 fi
+sysctl -p
 ###
 
 ### install base packages
-dnf install -y vim git gitk zsh most cascadia-code-fonts
+dnf install -y htop vim git gitk zsh most cascadia-code-fonts
 ###
 
 ### setup git
@@ -40,7 +38,8 @@ git config --global diff.submodule log
 ###
 
 ## install docker and docker-compose
-dnf install -y docker docker-compose
+dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo -y
+dnf install -y docker-ce docker-compose
 ## add current user to docker group (run docker without sudo)
 groupadd docker
 gpasswd -a $(logname) docker
