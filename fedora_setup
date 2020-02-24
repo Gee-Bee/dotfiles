@@ -69,6 +69,18 @@ dnf install -y rpmfusion-free-release-tainted
 dnf install -y libdvdcss
 ###
 
+### nvidia drivers
+if lspci | grep -E 'NVS 5400M|GF108M'; then
+    sudo dnf install -y xorg-x11-drv-nvidia-390xx akmod-nvidia-390xx
+    sudo dnf update -y
+    sudo cp /usr/share/X11/xorg.conf.d/nvidia.conf /etc/X11/xorg.conf.d/nvidia.conf
+fi
+###
+
+### tlp
+sudo dnf install -y tlp
+###
+
 ### Google Chrome
 rpm --import https://dl-ssl.google.com/linux/linux_signing_key.pub
 dnf -y install https://dl.google.com/linux/direct/google-chrome-stable_current_$(uname -i).rpm

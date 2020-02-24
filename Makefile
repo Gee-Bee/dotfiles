@@ -22,12 +22,6 @@ setup: fedora_setup code_extensions
 fedora_setup:
 	sudo ./fedora_setup
 
-nvidia_t530:
-	sudo dnf install -y xorg-x11-drv-nvidia-390xx akmod-nvidia-390xx
-	sudo dnf update -y
-	sudo cp /usr/share/X11/xorg.conf.d/nvidia.conf /etc/X11/xorg.conf.d/nvidia.conf
-
-
 .PHONY: code_extensions
 code_extensions:
 	./code_extensions
