@@ -20,4 +20,5 @@
     "gitlens.codeLens.enabled": false,
     "diffEditor.renderSideBySide": true,
     "terminal.integrated.shell.linux": "/bin/bash",
+    "update.mode": "none",
 }
