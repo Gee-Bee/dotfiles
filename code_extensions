@@ -5,12 +5,7 @@ if command -v code > /dev/null 2>&1; then
   extensions=(
     'ms-vscode-remote.remote-containers'
     'ms-vscode.theme-tomorrowkit'
-    'pustelto.bracketeer'
     'humao.rest-client'
-    'mhutchie.git-graph'
-    'dbaeumer.vscode-eslint'
-    'mikestead.dotenv'
-    'sianglim.slim'
   )
   for extension in ${extensions[@]}; do
     code --install-extension $extension;
