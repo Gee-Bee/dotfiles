@@ -9,3 +9,4 @@ headerbar.default-decoration button.titlebutton {
   padding: 0px;
   min-height: 0px;
 }
+@import 'colors.css';
