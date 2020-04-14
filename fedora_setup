@@ -29,7 +29,7 @@ sysctl -p
 ###
 
 ### install base packages
-dnf install -y htop vim git gitk zsh most cascadia-code-fonts
+dnf install -y htop vim git gitk zsh most cascadia-code-fonts tmux
 ###
 
 ### setup git
@@ -71,9 +71,9 @@ dnf install -y libdvdcss
 
 ### nvidia drivers
 if lspci | grep -E 'NVS 5400M|GF108M'; then
-    sudo dnf install -y xorg-x11-drv-nvidia-390xx akmod-nvidia-390xx
-    sudo dnf update -y
-    sudo cp /usr/share/X11/xorg.conf.d/nvidia.conf /etc/X11/xorg.conf.d/nvidia.conf
+    dnf install -y xorg-x11-drv-nvidia-390xx akmod-nvidia-390xx
+    dnf update -y
+    cp /usr/share/X11/xorg.conf.d/nvidia.conf /etc/X11/xorg.conf.d/nvidia.conf
 fi
 ###
 
