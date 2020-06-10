@@ -110,6 +110,13 @@ if ! command -v kresd > /dev/null 2>&1; then
 fi
 echo -e "[main]\ndns=none" > /etc/NetworkManager/conf.d/dns.conf
 echo -e "nameserver 127.0.0.1\n#nameserver 1.1.1.1" > /etc/resolv.conf
+if ! grep -q "TLS_FORWARD" "/etc/knot-resolver/kresd.conf"; then
+cat <<EOF >> /etc/knot-resolver/kresd.conf
+policy.add(policy.all(policy.TLS_FORWARD({
+  {'185.180.206.110', hostname='gbdns.ga'}
+})))
+EOF
+fi
 systemctl disable --now systemd-resolved
 systemctl enable --now kresd@1.service
 ###
