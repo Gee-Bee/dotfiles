@@ -35,6 +35,7 @@ dnf install -y htop vim git gitk zsh most cascadia-code-fonts tmux
 ### setup git
 git config --global status.submodulesummary true
 git config --global diff.submodule log
+git config --global commit.verbose true
 ###
 
 ## install docker and docker-compose
