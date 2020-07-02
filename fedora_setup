@@ -39,8 +39,19 @@ git config --global commit.verbose true
 ###
 
 ## install docker and docker-compose
-dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo -y
-dnf install -y docker-ce docker-compose
+# dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo -y
+sudo tee /etc/yum.repos.d/docker-ce.repo<<EOF
+[docker-ce-stable]
+name=Docker CE Stable - \$basearch
+baseurl=https://download.docker.com/linux/fedora/31/\$basearch/stable
+enabled=1
+gpgcheck=1
+gpgkey=https://download.docker.com/linux/fedora/gpg
+EOF
+dnf install -y docker-ce docker-ce-cli containerd.io docker-compose
+# whitelist docker in firewall
+firewall-cmd --permanent --zone=trusted --add-interface=docker0
+firewall-cmd --permanent --zone=FedoraWorkstation --add-masquerade
 ## add current user to docker group (run docker without sudo)
 groupadd docker
 gpasswd -a $(logname) docker
