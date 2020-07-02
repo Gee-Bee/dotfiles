@@ -52,7 +52,7 @@ cat <<EOF > /etc/docker/daemon.json
 }
 EOF
 semanage fcontext -a -e /var/lib/docker ${docker_dir}
-restorecon -R ${docker_dir}
+restorecon -R ${docker_dir} &
 ## switch to cgroup1 v1 until docker supports v2
 dnf install -y grubby
 grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
