@@ -49,9 +49,10 @@ gpgcheck=1
 gpgkey=https://download.docker.com/linux/fedora/gpg
 EOF
 dnf install -y docker-ce docker-ce-cli containerd.io docker-compose
-# whitelist docker in firewall
+# change firewall to iptables, whitelist docker in firewall
+sed -i 's/FirewallBackend=nftables/FirewallBackend=iptables/g' /etc/firewalld/firewalld.conf
 firewall-cmd --permanent --zone=trusted --add-interface=docker0
-firewall-cmd --permanent --zone=FedoraWorkstation --add-masquerade
+systemctl restart firewalld
 ## add current user to docker group (run docker without sudo)
 groupadd docker
 gpasswd -a $(logname) docker
