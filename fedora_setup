@@ -22,14 +22,11 @@ fi
 if ! grep -q "vm.max_map_count=" "/etc/sysctl.conf"; then
     echo "vm.max_map_count=262144" >> "/etc/sysctl.conf"
 fi
-if ! grep -q "vm.swappiness=" "/etc/sysctl.conf"; then
-    echo "vm.swappiness=1" >> "/etc/sysctl.conf"
-fi
 sysctl -p
 ###
 
 ### install base packages
-dnf install -y htop vim git gitk zsh most cascadia-code-fonts tmux
+dnf install -y htop git-all most cascadia-code-fonts tmux yakuake
 ###
 
 ### setup git
@@ -38,56 +35,41 @@ git config --global diff.submodule log
 git config --global commit.verbose true
 ###
 
+### setup vim as default editor
+sudo dnf remove -y nano
+echo '[ -z "$EDITOR" ] && export EDITOR="/usr/bin/vim"' > /etc/profile.d/vim-default-editor.sh
+###
+
 ## install docker and docker-compose
-# dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo -y
-sudo tee /etc/yum.repos.d/docker-ce.repo<<EOF
-[docker-ce-stable]
-name=Docker CE Stable - \$basearch
-baseurl=https://download.docker.com/linux/fedora/31/\$basearch/stable
-enabled=1
-gpgcheck=1
-gpgkey=https://download.docker.com/linux/fedora/gpg
-EOF
-dnf install -y docker-ce docker-ce-cli containerd.io docker-compose
-# change firewall to iptables, whitelist docker in firewall
-sed -i 's/FirewallBackend=nftables/FirewallBackend=iptables/g' /etc/firewalld/firewalld.conf
-firewall-cmd --permanent --zone=trusted --add-interface=docker0
-systemctl restart firewalld
-## add current user to docker group (run docker without sudo)
+curl -fsSL https://get.docker.com | CHANNEL=test sh
+sed -i 's/$releasever/32/' /etc/yum.repos.d/docker-ce.repo
+dnf install -y docker-ce docker-compose
+systemctl enable --now docker
+# add current user to docker group (run docker without sudo)
 groupadd docker
 gpasswd -a $(logname) docker
-## configure docker storage dir
-docker_dir=/home/docker
-mkdir -p /etc/docker ${docker_dir}
-cat <<EOF > /etc/docker/daemon.json
-{
-    "data-root": "${docker_dir}"
-}
-EOF
-semanage fcontext -a -e /var/lib/docker ${docker_dir}
-restorecon -R ${docker_dir} &
-## switch to cgroup1 v1 until docker supports v2
-dnf install -y grubby
-grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=0"
-##
-systemctl enable --now docker
-###
+# ###
 
-### RPMFusion and multimedia codecs
-dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-dnf check-update --refresh
-dnf groupupdate -y core
-dnf groupupdate -y multimedia --setop="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
-dnf groupupdate -y sound-and-video
-dnf install -y rpmfusion-free-release-tainted
-dnf install -y libdvdcss
-###
+# ### RPMFusion and multimedia codecs
+# dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+# dnf check-update --refresh
+# dnf groupupdate -y core
+# dnf groupupdate -y multimedia --setop="install_weak_deps=False" --exclude=PackageKit-gstreamer-plugin
+# dnf groupupdate -y sound-and-video
+# dnf install -y rpmfusion-free-release-tainted
+# dnf install -y libdvdcss
+# ###
 
-### nvidia drivers
-if lspci | grep -E 'NVS 5400M|GF108M'; then
-    dnf install -y xorg-x11-drv-nvidia-390xx akmod-nvidia-390xx
-    dnf update -y
-    cp /usr/share/X11/xorg.conf.d/nvidia.conf /etc/X11/xorg.conf.d/nvidia.conf
+# ### nvidia drivers
+# if lspci | grep -Eq 'NVS 5400M|GF108M'; then
+#     dnf install -y xorg-x11-drv-nvidia-390xx akmod-nvidia-390xx
+#     dnf update -y
+#     cp /usr/share/X11/xorg.conf.d/nvidia.conf /etc/X11/xorg.conf.d/nvidia.conf
+# fi
+# ###
+### fix nouveau brightness
+if lspci | grep -Eq 'NVS 5400M|GF108M' ; then
+grubby --update-kernel=ALL --args="acpi_backlight=video"
 fi
 ###
 
@@ -103,34 +85,34 @@ EOF
 sudo dnf install -y xdotool the_silver_searcher entr
 ###
 
-### media player
-sudo dnf install -y mpv mpv-mpris
-###
+# ### media player (requires rpmfusion)
+# sudo dnf install -y mpv mpv-mpris
+# ###
 
-### Google Chrome
+## Google Chrome
 rpm --import https://dl-ssl.google.com/linux/linux_signing_key.pub
 dnf -y install https://dl.google.com/linux/direct/google-chrome-stable_current_$(uname -i).rpm
-###
+##
 
-### Visual Studio Code
+## Visual Studio Code
 rpm --import https://packages.microsoft.com/keys/microsoft.asc
 echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo
 dnf -y install code
-###
+##
 
-### DNS configuration - knot-resolver
-if ! command -v kresd > /dev/null 2>&1; then
-  dnf install -y knot-resolver
-fi
-echo -e "[main]\ndns=none" > /etc/NetworkManager/conf.d/dns.conf
-echo -e "nameserver 127.0.0.1\n#nameserver 1.1.1.1" > /etc/resolv.conf
-if ! grep -q "TLS_FORWARD" "/etc/knot-resolver/kresd.conf"; then
-cat <<EOF >> /etc/knot-resolver/kresd.conf
-policy.add(policy.all(policy.TLS_FORWARD({
-  {'185.180.206.110', hostname='gbdns.ga'}
-})))
-EOF
-fi
-systemctl disable --now systemd-resolved
-systemctl enable --now kresd@1.service
-###
+# ### DNS configuration - knot-resolver (systemd-resolved as default in Fedora >= 33)
+# if ! command -v kresd > /dev/null 2>&1; then
+#   dnf install -y knot-resolver
+# fi
+# echo -e "[main]\ndns=none" > /etc/NetworkManager/conf.d/dns.conf
+# echo -e "nameserver 127.0.0.1\n#nameserver 1.1.1.1" > /etc/resolv.conf
+# if ! grep -q "TLS_FORWARD" "/etc/knot-resolver/kresd.conf"; then
+# cat <<EOF >> /etc/knot-resolver/kresd.conf
+# policy.add(policy.all(policy.TLS_FORWARD({
+#   {'185.180.206.110', hostname='gbdns.ga'}
+# })))
+# EOF
+# fi
+# systemctl disable --now systemd-resolved
+# systemctl enable --now kresd@1.service
+# ###

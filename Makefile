@@ -8,7 +8,7 @@ home/%:
 	@[ -d $(dir ~/$*) ] || mkdir -p $(dir ~/$*)
 	@[ -f ~/$* ] || ln -s $(realpath $@) ~/$*
 
-.PHONY: link
+.PHONY: links
 links: $(srcfiles)
 
 .PHONY: chmod
