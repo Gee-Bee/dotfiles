@@ -26,7 +26,12 @@ sysctl -p
 ###
 
 ### install base packages
-dnf install -y htop git-all most cascadia-code-fonts tmux yakuake
+dnf install -y htop git-all most cascadia-code-fonts tmux
+###
+
+### install yakuake dropdown terminal
+dnf install -y yakuake
+ln -s -t /etc/xdg/autostart /usr/share/applications/org.kde.yakuake.desktop
 ###
 
 ### setup git
