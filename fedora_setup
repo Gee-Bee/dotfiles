@@ -26,7 +26,7 @@ sysctl -p
 ###
 
 ### install base packages
-dnf install -y htop git-all most cascadia-code-fonts tmux
+dnf install -y htop git-all most cascadia-code-fonts tmux breeze-gtk
 ###
 
 ### install yakuake dropdown terminal
