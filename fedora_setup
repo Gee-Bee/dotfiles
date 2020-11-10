@@ -110,6 +110,7 @@ cat <<EOF > /etc/systemd/resolved.conf.d/dns_over_tls.conf
 [Resolve]
 DNS=185.180.206.110#gbdns.ga
 DNSOverTLS=yes
+Domains=~.
 EOF
 systemctl restart systemd-resolved
 # ###
