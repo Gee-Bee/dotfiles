@@ -35,7 +35,7 @@ ln -s -t /etc/xdg/autostart /usr/share/applications/org.kde.yakuake.desktop
 ###
 
 ### setup git
-git config --global status.submodulesummary true
+git config --global status.submoduleSummary true
 git config --global diff.submodule log
 git config --global commit.verbose true
 ###
