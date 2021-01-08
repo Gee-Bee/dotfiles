@@ -65,16 +65,15 @@ gpasswd -a $(logname) docker
 # dnf install -y libdvdcss
 # ###
 
-# ### nvidia drivers
-# if lspci | grep -Eq 'NVS 5400M|GF108M'; then
-#     dnf install -y xorg-x11-drv-nvidia-390xx akmod-nvidia-390xx
-#     dnf update -y
-#     cp /usr/share/X11/xorg.conf.d/nvidia.conf /etc/X11/xorg.conf.d/nvidia.conf
-# fi
-# ###
 ### fix nouveau brightness
 if lspci | grep -Eq 'NVS 5400M|GF108M' ; then
 grubby --update-kernel=ALL --args="acpi_backlight=video"
+fi
+###
+
+### fix TrackPoint Keyboard II middle button
+if xiinput list | grep "TrackPoint Keyboard II Mouse" ; then
+xinput set-button-map "TrackPoint Keyboard II Mouse" 1 0
 fi
 ###
 
