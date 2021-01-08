@@ -6,7 +6,7 @@ Font=Cascadia Code,10,-1,5,50,0,0,0,0,0
 CursorShape=0
 
 [General]
-Command=/bin/tmux
+Command=/bin/tmux new -A
 Name=default
 Parent=FALLBACK/
 TerminalCenter=true
