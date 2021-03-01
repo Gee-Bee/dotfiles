@@ -5,7 +5,6 @@
     "workbench.colorTheme": "Tomorrow Night Eighties",
     "window.menuBarVisibility": "toggle",
     "editor.tabSize": 2,
-    "window.zoomLevel": 0,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "files.associations": {
@@ -21,4 +20,7 @@
     "diffEditor.renderSideBySide": true,
     "terminal.integrated.shell.linux": "/bin/bash",
     "update.mode": "none",
+    "editor.renderWhitespace": "all",
+    "editor.formatOnPaste": true,
+    "editor.autoIndent": "keep",
 }
