@@ -83,7 +83,7 @@ fi
 sudo dnf install -y tlp
 cat <<EOF > /etc/tlp.d/01-thresholds.conf
 START_CHARGE_THRESH_BAT0=40
-STOP_CHARGE_THRESH_BAT0=45
+STOP_CHARGE_THRESH_BAT0=70
 EOF
 ###
 
