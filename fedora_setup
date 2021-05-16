@@ -47,8 +47,9 @@ echo '[ -z "$EDITOR" ] && export EDITOR="/usr/bin/vim"' > /etc/profile.d/vim-def
 ###
 
 ## install docker and docker-compose
-curl -fsSL https://get.docker.com | CHANNEL=test sh
-sed -i 's/$releasever/32/' /etc/yum.repos.d/docker-ce.repo
+# curl -fsSL https://get.docker.com | CHANNEL=test sh
+# sed -i 's/$releasever/32/' /etc/yum.repos.d/docker-ce.repo
+dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
 dnf install -y docker-ce docker-compose
 systemctl enable --now docker
 # add current user to docker group (run docker without sudo)
