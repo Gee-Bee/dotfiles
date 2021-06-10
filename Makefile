@@ -33,6 +33,12 @@ zprezto:
 	make -C ~/.zprezto
 	chsh -s /bin/zsh
 
+.PHONY: bash-it
+bash-it:
+	git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it
+	git clone git@github.com:Gee-Bee/bash-it-custom.git ~/bash_it/custom
+	~/.bash_it/install.sh
+
 .PHONY: clean
 clean:
 	rm -rf $(destfiles)
