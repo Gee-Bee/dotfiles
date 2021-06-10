@@ -56,6 +56,9 @@ loginctl enable-linger "$(logname)"
 # dockerd-rootless-setuptool.sh install
 # systemctl enable --user --now docker
 # export DOCKER_HOST=unix:///run/user/1000/docker.sock
+# append to /etc/security/limits.conf
+#   gb              soft    memlock         unlimited
+#   gb              hard    memlock         unlimited
 # ###
 
 # ### RPMFusion and multimedia codecs
