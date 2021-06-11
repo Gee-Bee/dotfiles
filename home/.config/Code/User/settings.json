@@ -2,25 +2,22 @@
     "editor.fontFamily": "Cascadia Code",
     "terminal.integrated.fontFamily": "Cascadia Code",
     "editor.fontLigatures": true,
-    "workbench.colorTheme": "Tomorrow Night Eighties",
     "window.menuBarVisibility": "toggle",
     "editor.tabSize": 2,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
-    "files.associations": {
-        ".coffee*": "coffeescript"
-    },
     "explorer.confirmDelete": false,
     "window.titleBarStyle": "native",
     "telemetry.enableCrashReporter": false,
     "telemetry.enableTelemetry": false,
-    "gitlens.hovers.currentLine.over": "line",
-    "gitlens.currentLine.enabled": false,
-    "gitlens.codeLens.enabled": false,
     "diffEditor.renderSideBySide": true,
-    "terminal.integrated.shell.linux": "/bin/bash",
     "update.mode": "none",
     "editor.renderWhitespace": "all",
     "editor.formatOnPaste": true,
     "editor.autoIndent": "keep",
+    "terminal.integrated.scrollback": 10000,
+    "workbench.colorTheme": "Tomorrow Night Eighties",
+    "workbench.colorCustomizations": {
+        "tab.activeBackground": "#1D1F21"
+    }
 }
