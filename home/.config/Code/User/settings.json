@@ -15,9 +15,8 @@
     "editor.renderWhitespace": "all",
     "editor.formatOnPaste": true,
     "editor.autoIndent": "keep",
-    "terminal.integrated.scrollback": 10000,
     "workbench.colorTheme": "Tomorrow Night Eighties",
     "workbench.colorCustomizations": {
-        "tab.activeBackground": "#1D1F21"
+        "tab.activeBackground": "#37373d"
     }
 }
