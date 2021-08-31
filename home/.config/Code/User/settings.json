@@ -18,5 +18,6 @@
     "workbench.colorTheme": "Tomorrow Night Eighties",
     "workbench.colorCustomizations": {
         "tab.activeBackground": "#37373d"
-    }
+    },
+    "redhat.telemetry.enabled": false
 }
