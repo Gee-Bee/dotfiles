@@ -47,11 +47,11 @@ echo '[ -z "$EDITOR" ] && export EDITOR="/usr/bin/vim"' > /etc/profile.d/vim-def
 ###
 
 ## install docker and docker-compose
-dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-dnf install -y docker-ce docker-compose
+# dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+# dnf install -y docker-ce docker-compose
 # https://github.com/moby/moby/issues/41230
-dnf install -y policycoreutils-python-utils && semanage permissive -a iptables_t
-loginctl enable-linger "$(logname)"
+# dnf install -y policycoreutils-python-utils && semanage permissive -a iptables_t
+# loginctl enable-linger "$(logname)"
 # run as user
 # dockerd-rootless-setuptool.sh install
 # systemctl enable --user --now docker
@@ -60,6 +60,17 @@ loginctl enable-linger "$(logname)"
 #   gb              soft    memlock         unlimited
 #   gb              hard    memlock         unlimited
 # ###
+
+## install podman and docker-compose
+dnf install -y podman podman-docker docker-compose
+if ! grep -qF "label = false" /usr/share/containers/containers.conf; then
+  sed -i '/label =/a label = false' /usr/share/containers/containers.conf
+fi
+
+if ! grep -qF 'unqualified-search-registries = ["docker.io"]' /etc/containers/registries.conf; then
+  sed -i '/unqualified-search-registries =/a unqualified-search-registries = ["docker.io"]' /etc/containers/registries.conf
+fi
+###
 
 # ### RPMFusion and multimedia codecs
 # dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
