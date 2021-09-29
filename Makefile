@@ -39,6 +39,7 @@ bash-it:
 	rm -rf ~/.bash_it/custom
 	git clone git@github.com:Gee-Bee/bash-it-custom.git ~/.bash_it/custom
 	~/.bash_it/install.sh
+	echo 'eval "$(starship init bash)"' > ~/.bashrc
 
 .PHONY: clean
 clean:

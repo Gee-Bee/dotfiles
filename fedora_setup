@@ -29,8 +29,8 @@ sysctl -p
 dnf install -y htop git-all most cascadia-code-fonts tmux breeze-gtk
 ###
 
-### install yakuake dropdown terminal
-dnf install -y yakuake
+### install yakuake dropdown terminal and starship shell prompt
+dnf install -y yakuake starship
 ln -s -t /etc/xdg/autostart /usr/share/applications/org.kde.yakuake.desktop
 ###
 
