@@ -15,9 +15,12 @@
     "editor.renderWhitespace": "all",
     "editor.formatOnPaste": true,
     "editor.autoIndent": "keep",
-    "workbench.colorTheme": "Tomorrow Night Eighties",
+    "workbench.colorTheme": "Gruvbox Dark Hard",
     "workbench.colorCustomizations": {
         "tab.activeBackground": "#37373d"
     },
-    "redhat.telemetry.enabled": false
+    "redhat.telemetry.enabled": false,
+    "plantuml.render": "PlantUMLServer",
+    "plantuml.server": "http://localhost:8080",
+    "editor.bracketPairColorization.enabled": true
 }

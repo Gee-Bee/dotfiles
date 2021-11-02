@@ -1,5 +1,5 @@
 [Appearance]
-ColorScheme=base16-eighties
+ColorScheme=Gruvbox
 Font=Cascadia Code,10,-1,5,50,0,0,0,0,0
 
 [Cursor Options]
