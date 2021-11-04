@@ -1,6 +1,6 @@
 [Appearance]
 ColorScheme=Gruvbox
-Font=Cascadia Code,10,-1,5,50,0,0,0,0,0
+Font=Cascadia Code,10,-1,5,25,0,0,0,0,0,Light
 
 [Cursor Options]
 CursorShape=0
