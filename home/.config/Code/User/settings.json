@@ -15,9 +15,6 @@
     "editor.formatOnPaste": true,
     "editor.autoIndent": "keep",
     "workbench.colorTheme": "Gruvbox Dark Hard",
-    "workbench.colorCustomizations": {
-        "tab.activeBackground": "#37373d"
-    },
     "redhat.telemetry.enabled": false,
     "plantuml.render": "PlantUMLServer",
     "plantuml.server": "http://localhost:8080",
