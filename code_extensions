@@ -4,7 +4,7 @@
 if command -v code > /dev/null 2>&1; then
   extensions=(
     'ms-vscode-remote.remote-containers'
-    'ms-vscode.theme-tomorrowkit'
+    'jdinhlife.gruvbox'
     'humao.rest-client'
   )
   for extension in ${extensions[@]}; do
