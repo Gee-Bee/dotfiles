@@ -3,5 +3,13 @@
   {
     "key": "ctrl+j",
     "command": "editor.action.joinLines"
+  },
+  {
+    "key": "ctrl+tab",
+    "command": "workbench.action.nextEditorInGroup"
+  },
+  {
+    "key": "ctrl+shift+tab",
+    "command": "workbench.action.previousEditorInGroup"
   }
 ]
