@@ -22,6 +22,12 @@ setup: fedora_setup code_extensions
 fedora_setup:
 	sudo ./fedora_setup
 
+.PHONY: fedora_autoupdate
+fedora_autoupdate:
+	sudo dnf install -y dnf-automatic
+	sudo systemctl enable --now dnf-automatic.timer
+	systemctl --user enable update-on-shutdown.service
+
 .PHONY: code_extensions
 code_extensions:
 	./code_extensions

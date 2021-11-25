@@ -1,0 +1,12 @@
+[Unit]
+Description=Install updates on shutdown
+DefaultDependencies=false
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/sudo /bin/bash -lc '/usr/bin/dnf upgrade -y'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=shutdown.target

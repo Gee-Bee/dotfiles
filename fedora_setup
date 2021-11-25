@@ -89,9 +89,9 @@ fi
 ###
 
 ### fix TrackPoint Keyboard II middle button
-if xiinput list | grep "TrackPoint Keyboard II Mouse" ; then
-xinput set-button-map "TrackPoint Keyboard II Mouse" 1 0
-fi
+# if xinput list | grep "TrackPoint Keyboard II Mouse" ; then
+# xinput set-button-map "TrackPoint Keyboard II Mouse" 1 0
+# fi
 ###
 
 ### tlp
