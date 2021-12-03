@@ -22,11 +22,33 @@ setup: fedora_setup code_extensions
 fedora_setup:
 	sudo ./fedora_setup
 
+define updateOnShutdownService
+[Unit]
+Description=Install updates on shutdown
+DefaultDependencies=false
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/dnf upgrade -y
+RemainAfterExit=yes
+
+[Install]
+WantedBy=shutdown.target
+endef
+export updateOnShutdownService
 .PHONY: fedora_autoupdate
 fedora_autoupdate:
 	sudo dnf install -y dnf-automatic
 	sudo systemctl enable --now dnf-automatic.timer
-	systemctl --user enable update-on-shutdown.service
+	@echo "$$updateOnShutdownService" | sudo tee /etc/systemd/system/update-on-shutdown.service
+	sudo systemctl enable update-on-shutdown.service
+
+.PHONY: fedora_autoupdate_disable
+fedora_autoupdate_disable:
+	sudo systemctl disable dnf-automatic.timer
+	sudo systemctl disable update-on-shutdown.service
+	sudo rm -f /etc/systemd/system/update-on-shutdown.service
 
 .PHONY: code_extensions
 code_extensions:
