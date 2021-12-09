@@ -30,7 +30,7 @@ Before=shutdown.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/dnf upgrade -y
+ExecStart=/usr/bin/dnf upgrade -y --cacheonly
 RemainAfterExit=yes
 
 [Install]
