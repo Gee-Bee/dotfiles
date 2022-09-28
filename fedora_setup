@@ -131,3 +131,6 @@ Domains=~.
 EOF
 systemctl restart systemd-resolved
 # ###
+
+# SDDM external monitors
+# copy xrandr w args from arandr to /etc/sddm/Xsetup
