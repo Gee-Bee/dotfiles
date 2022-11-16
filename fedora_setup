@@ -70,6 +70,13 @@ fi
 if ! grep -qF 'unqualified-search-registries = ["docker.io"]' /etc/containers/registries.conf; then
   sed -i '/unqualified-search-registries =/a unqualified-search-registries = ["docker.io"]' /etc/containers/registries.conf
 fi
+
+# Elastisearch memlock limits
+for limit_type in soft hard; do
+  if ! grep -qF "$(logname) $limit_type memlock unlimited" /etc/security/limits.conf; then
+    echo "$(logname) $limit_type memlock unlimited" >> /etc/security/limits.conf;
+  fi
+done
 ###
 
 # ### RPMFusion and multimedia codecs
