@@ -125,7 +125,7 @@ dnf -y install code
 mkdir -p /etc/systemd/resolved.conf.d/
 cat <<EOF > /etc/systemd/resolved.conf.d/dns_over_tls.conf
 [Resolve]
-DNS=185.180.206.110#gbdns.ga
+DNS=94.140.14.15#dns-family.adguard.com 94.140.15.16#dns-family.adguard.com
 DNSOverTLS=yes
 Domains=~.
 EOF
