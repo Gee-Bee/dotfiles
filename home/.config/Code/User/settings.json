@@ -7,7 +7,7 @@
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "explorer.confirmDelete": false,
-    "window.titleBarStyle": "native",
+    "window.titleBarStyle": "custom",
     "telemetry.telemetryLevel": "off",
     "diffEditor.renderSideBySide": true,
     "update.mode": "none",
