@@ -30,8 +30,10 @@ dnf install -y htop git-all most cascadia-code-fonts tmux breeze-gtk
 ###
 
 ### install yakuake dropdown terminal and starship shell prompt
-dnf install -y yakuake starship fish
+dnf install -y yakuake fish
 ln -s -t /etc/xdg/autostart /usr/share/applications/org.kde.yakuake.desktop
+dnf copr enable atim/starship
+dnf install -y starship
 ###
 
 ### setup git
@@ -90,9 +92,9 @@ done
 # ###
 
 ### fix nouveau brightness
-if lspci | grep -Eq 'NVS 5400M|GF108M' ; then
-grubby --update-kernel=ALL --args="acpi_backlight=video"
-fi
+#if lspci | grep -Eq 'NVS 5400M|GF108M' ; then
+#grubby --update-kernel=ALL --args="acpi_backlight=video"
+#fi
 ###
 
 ### fix TrackPoint Keyboard II middle button
@@ -119,7 +121,7 @@ sudo dnf install -y xdotool the_silver_searcher entr
 
 ## Google Chrome
 rpm --import https://dl-ssl.google.com/linux/linux_signing_key.pub
-dnf -y install https://dl.google.com/linux/direct/google-chrome-stable_current_$(uname -i).rpm
+dnf -y install https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
 ##
 
 ## Visual Studio Code
