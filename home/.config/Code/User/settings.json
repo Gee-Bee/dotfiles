@@ -14,9 +14,13 @@
     "editor.renderWhitespace": "all",
     "editor.formatOnPaste": true,
     "editor.autoIndent": "keep",
-    "workbench.colorTheme": "Gruvbox Dark Hard",
     "redhat.telemetry.enabled": false,
     "plantuml.render": "PlantUMLServer",
     "plantuml.server": "http://localhost:8080",
-    "editor.bracketPairColorization.enabled": true
+    "editor.bracketPairColorization.enabled": true,
+    "git.enableSmartCommit": true,
+    "debug.javascript.autoAttachFilter": "disabled",
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "remote.autoForwardPortsSource": "hybrid",
+    "workbench.colorTheme": "Gruvbox ish Dark Hard",
 }

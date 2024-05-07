@@ -4,8 +4,7 @@
 if command -v code > /dev/null 2>&1; then
   extensions=(
     'ms-vscode-remote.remote-containers'
-    'jdinhlife.gruvbox'
-    'humao.rest-client'
+    'GracefulPotato.gruvbox-ish'
   )
   for extension in ${extensions[@]}; do
     code --install-extension $extension;
