@@ -53,13 +53,13 @@ echo '[ -z "$EDITOR" ] && export EDITOR="/usr/bin/vim"' > /etc/profile.d/vim-def
 
 ## install podman and docker-compose
 dnf install -y podman podman-docker docker-compose
-if ! grep -qF "label = false" /usr/share/containers/containers.conf; then
-  sed -i '/label =/a label = false' /usr/share/containers/containers.conf
-fi
+CONT_CONF_DIR=/etc/containers/containers.conf.d
+mkdir -p $CONT_CONF_DIR
+echo -e "[containers]\nlabel = false" > $CONT_CONF_DIR/disable_selinux_labeling.conf
 
-if ! grep -qF 'unqualified-search-registries = ["docker.io"]' /etc/containers/registries.conf; then
-  sed -i '/unqualified-search-registries =/a unqualified-search-registries = ["docker.io"]' /etc/containers/registries.conf
-fi
+# if ! grep -qF 'unqualified-search-registries = ["docker.io"]' /etc/containers/registries.conf; then
+#   sed -i '/unqualified-search-registries =/a unqualified-search-registries = ["docker.io"]' /etc/containers/registries.conf
+# fi
 
 # Elastisearch memlock limits
 for limit_type in soft hard; do
