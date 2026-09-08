@@ -17,7 +17,7 @@ in
       "preempt=full"
       "loglevel=4"
       "nowatchdog"
-      "mitigations=off" # Odzyskanie 15-30% wydajności procesora poprzez wyłączenie łat sprzętowych
+      # "mitigations=off" # Ryzykowne: Odzyskanie 15-30% wydajności procesora poprzez wyłączenie łat sprzętowych
     ];
     kernel.sysctl = {
       "vm.swappiness" = 10; # SSD tylko RAM będzie na skraju wyczerpania.
@@ -49,8 +49,6 @@ in
   nix.optimise.automatic = true;
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
-    keep-outputs = true;        # avoids re-building system-level derivations after GC
-    keep-derivations = true;
     trusted-users = [ "gb" ];
   };
   nix.gc = {
@@ -167,7 +165,10 @@ in
   # --- WIRTUALIZACJA I DOCKER ---
   virtualisation.docker = {
     enable = true;
-    autoPrune.enable = true;
+    autoPrune = {
+      enable = true;
+      flags = [ "--all" ]; # też cache i stare obrazy
+    };
     rootless = {
       enable = true;
       setSocketVariable = true;
