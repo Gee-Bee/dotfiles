@@ -46,6 +46,7 @@ in
     };
   };
 
+  nix.optimise.automatic = true;
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     keep-outputs = true;        # avoids re-building system-level derivations after GC
@@ -191,7 +192,6 @@ in
 
   # --- OPTYMALIZACJE ŚRODOWISKA GRAFICZNEGO (BEZ INDEKSOWANIA BALOO/AKONADI) ---
   environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
     GLIBC_TUNABLES = "glibc.malloc.tcache_max=65536"; # Szybsza alokacja pamięci w aplikacjach GUI
   };
   environment.extraInit = "export AKONADI_INSTANCE_SERVER_SELF_START=false\n";
@@ -283,7 +283,6 @@ in
     kdePackages.yakuake
     kdePackages.kate
     kdePackages.qtmultimedia
-    kdePackages.qtwebengine
     kdePackages.krdc
     mpv
     nerd-fonts.hack
