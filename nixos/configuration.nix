@@ -139,12 +139,7 @@ in
   # --- PROFILE UŻYTKOWNIKÓW & ZABEZPIECZENIA ---
   nixpkgs.config.allowUnfree = true;
 
-  security.sudo.extraRules = [
-    {
-      groups = [ "wheel" ];
-      commands = [ { command = "ALL"; options = [ "NOPASSWD" ]; } ];
-    }
-  ];
+  security.sudo.wheelNeedsPassword = false;
 
   users.users.gb = {
     isNormalUser = true;
