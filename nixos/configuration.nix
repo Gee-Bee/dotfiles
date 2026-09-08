@@ -7,6 +7,7 @@ in
 {
   imports = [
     ./t530-generated-hardware-configuration.nix
+    ./thumbnails-pregeneration.nix
   ];
 
   # --- SYSTEM CORE, BOOT & ULTRA PERFORMANCE TUNING ---
@@ -20,7 +21,7 @@ in
     ];
     kernel.sysctl = {
       "vm.swappiness" = 100;
-      "vm.vfs_cache_pressure" = 50;
+      "vm.vfs_cache_pressure" = 10;
       "vm.page-cluster" = 0;
       "vm.watermark_scale_factor" = 125; # Płynniejsze zarządzanie pamięcią wirtualną przy intensywnym użyciu ZRAM
       "vm.zone_reclaim_mode" = 0; # Optymalizacja lokalnej alokacji stron pamięci dla CPU Ivy Bridge
@@ -219,6 +220,10 @@ in
   environment.etc."xdg/kdeglobals".text = ''
     [KDE]
     AnimationDurationFactor=0.5
+
+    [KFileDialog Settings]
+    Automatically select filename extension=true
+    Show Preview=false
   '';
 
   # --- PROGRAMY I USŁUGI WBUDOWANE ---
