@@ -16,6 +16,7 @@ in
       "loglevel=4"
     ];
     extraModprobeConfig = "options btusb enable_autosuspend=0";
+    initrd.kernelModules = [ "i915" ]; # Wczesne ładowanie sterownika wideo dla grafiki Intel HD 4000
     loader = {
       timeout = 1;
       grub = {
@@ -138,7 +139,6 @@ in
     algorithm = "zstd";
     memoryPercent = 50;
   };
-  hardware.cpu.intel.updateMicrocode = true;
   hardware.enableAllFirmware = true;
   hardware.firmware = [ pkgs.broadcom-bt-firmware ];
   hardware.graphics = {
