@@ -68,7 +68,6 @@ in
   time.timeZone = "Europe/Warsaw";
 
   services.journald.extraConfig = "Compress=yes\n";
-  services.geoclue2.enable = false;
 
   # Włączenie nowoczesnego planisty zadań eBPF zoptymalizowanego pod responsywność desktopu
   services.scx = {
@@ -116,8 +115,6 @@ in
     enable = true;
     wifi.powersave = false; # Wyłączenie uśpienia Wi-Fi dla stabilnego pingu i pełnej przepustowości sieci
   };
-  services.printing.enable = false;
-  services.pcscd.enable = false;
   services.fstrim.enable = true; # Automatyczne czyszczenie i konserwacja dysku SSD w tle
   security.rtkit.enable = true;
   hardware.bluetooth = {
@@ -148,7 +145,6 @@ in
     extraGroups = [
       "networkmanager"
       "wheel"
-      "libvirtd"
     ];
   };
 
@@ -164,8 +160,6 @@ in
   # Sticking with nouveau; videoDrivers left at its default.
 
   # --- WIRTUALIZACJA I DOCKER ---
-  virtualisation.libvirtd.enable = true;
-  programs.virt-manager.enable = true;
   virtualisation.docker = {
     enable = true;
     autoPrune.enable = true;
@@ -219,7 +213,7 @@ in
     };
     git = {
       enable = true;
-      package = pkgs.git;
+      package = pkgs.gitFull;
       config = {
         user.name = "Grzegorz Bunia";
         user.email = "g.bunia@american-systems.pl";
@@ -253,7 +247,6 @@ in
     htop
     gnumake
     vscode
-    zed-editor
     firefox-devedition
     google-chrome
     lshw
@@ -270,11 +263,7 @@ in
     scrcpy
     qtpass
     pass
-    lazygit
-    git-cola
-    gitui
     docker-buildx
-    screenkey
     showmethekey
     ffmpeg
     pwvucontrol
