@@ -14,9 +14,18 @@ in
     kernelParams = [
       "preempt=voluntary"
       "loglevel=4"
+      "nowatchdog" # Wyłączenie przerwań zegara watchdog dla chłodniejszego procesora
     ];
+    kernel.sysctl = {
+      "vm.swappiness" = 100;
+      "vm.vfs_cache_pressure" = 50;
+      "net.core.default_qdisc" = "fq"; # Wymagane dla algorytmu BBR
+      "net.ipv4.tcp_congestion_control" = "bbr"; # Ultra-szybkie zarządzanie pakietami sieciowymi
+    };
     extraModprobeConfig = "options btusb enable_autosuspend=0";
     initrd.kernelModules = [ "i915" ]; # Wczesne ładowanie sterownika wideo dla grafiki Intel HD 4000
+    blacklistedKernelModules = [ "firewire_ohci" ]; # Wyłączenie szukania archaicznego portu FireWire
+    tmp.useTmpfs = true; # Przeniesienie katalogu /tmp do pamięci RAM dla oszczędzania SSD i szybkości
     loader = {
       timeout = 1;
       grub = {
@@ -44,6 +53,17 @@ in
 
   time.timeZone = "Europe/Warsaw";
 
+  services.journald.extraConfig = "Compress=yes\n";
+  services.geoclue2.enable = false;
+  services.system76-scheduler.enable = true; # Dynamiczne nadawanie priorytetów aktywnym aplikacjom GUI
+
+  # Optymalizacja systemd: wyłączenie zrzutów pamięci po awarii oraz skrócenie timeoutów (standard 26.05)
+  systemd.coredump.enable = false;
+  systemd.settings.Manager = {
+    DefaultTimeoutStartSec = "10s";
+    DefaultTimeoutStopSec = "10s";
+  };
+
   # --- LOKALIZACJA I KLAWIATURA ---
   i18n = {
     defaultLocale = "en_US.UTF-8";
@@ -66,7 +86,13 @@ in
   };
 
   # --- INTERFEJS GRAFICZNY (PLASMA 6) ---
-  services.xserver.enable = true;
+  services.xserver = {
+    enable = true;
+    deviceSection = ''
+      Option "AccelMethod" "sna"
+      Option "TearFree" "true"
+    ''; # Optymalizacja akceleracji 2D i eliminacja rozrywania ekranu dla Intel HD 4000
+  };
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
   services.displayManager.defaultSession = "plasmax11"; # Wymuszenie sesji X11 dla stabilności na starszym GPU
@@ -77,8 +103,6 @@ in
   services.printing.enable = false;
   services.pcscd.enable = false;
   services.fstrim.enable = true; # Automatyczne czyszczenie i konserwacja dysku SSD w tle
-
-  # --- MULTIMEDIA, AUDIO (DOWNGRADE DO 25.11) & BLUETOOTH ---
   security.rtkit.enable = true;
   hardware.bluetooth = {
     enable = true;
@@ -144,19 +168,26 @@ in
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-      intel-media-driver
       intel-vaapi-driver
     ];
   };
 
+  # Zaawansowany tuning warstwy blokowej dla dysków SSD (Kyber + wyłączenie add_random)
+  services.udev.extraRules = ''
+    ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="kyber"
+    ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/add_random}="0"
+  '';
+
   # --- OPTYMALIZACJE ŚRODOWISKA GRAFICZNEGO (BEZ INDEKSOWANIA BALOO/AKONADI) ---
   environment.etc."xdg/baloofilerc".text = "[Basic Settings]\nIndexing-Enabled=false\n";
   environment.extraInit = "export AKONADI_INSTANCE_SERVER_SELF_START=false\n";
-  environment.sessionVariables = { NIXOS_OZONE_WL = "1"; };
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    GLIBC_TUNABLES = "glibc.malloc.tcache_max=65536"; # Szybsza alokacja pamięci w aplikacjach GUI
+  };
 
   # --- PROGRAMY I USŁUGI WBUDOWANE ---
   programs = {
-    mtr.enable = true;
     firefox.enable = true;
     starship.enable = true;
     gnupg.agent = {
@@ -172,7 +203,7 @@ in
     };
     git = {
       enable = true;
-      package = pkgs.gitFull;
+      package = pkgs.git;
       config = {
         user.name = "Grzegorz Bunia";
         user.email = "g.bunia@american-systems.pl";
@@ -222,7 +253,6 @@ in
     android-tools
     scrcpy
     qtpass
-    pinentry-qt
     pass
     lazygit
     git-cola
