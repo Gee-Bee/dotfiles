@@ -73,8 +73,9 @@ in
   # --- SIEĆ I USŁUGI ---
   networking.hostName = "t530";
   networking.networkmanager.enable = true;
-  services.printing.enable = true;
-  services.pcscd.enable = true;
+  services.printing.enable = false;
+  services.pcscd.enable = false;
+  services.fstrim.enable = true; # Automatyczne czyszczenie i konserwacja dysku SSD w tle
 
   # --- MULTIMEDIA, AUDIO (DOWNGRADE DO 25.11) & BLUETOOTH ---
   security.rtkit.enable = true;
