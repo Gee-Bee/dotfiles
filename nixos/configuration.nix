@@ -247,14 +247,6 @@ in
       viAlias = true;
       vimAlias = true;
     };
-    git = {
-      enable = true;
-      package = pkgs.gitFull;
-      config = {
-        user.name = "Grzegorz Bunia";
-        user.email = "g.bunia@american-systems.pl";
-      };
-    };
     fish = {
       enable = true;
       interactiveShellInit = ''set fish_greeting ""'';
@@ -277,6 +269,29 @@ in
       '';
     };
   };
+
+  programs.git = {
+    enable = true;
+    package = pkgs.gitFull;
+    # Passing a list preserves the exact section order in /etc/gitconfig
+    config = [
+      {
+        user.name = "Grzegorz Bunia";
+        user.email = "g.bunia@american-systems.pl";
+      }
+      {
+        includeIf = {
+          "gitdir/i:**/src/_priv/**"     = { path = "/etc/git/config.private"; };
+          "gitdir/i:**/src/{.,}dotfiles/**" = { path = "/etc/git/config.private"; };
+        };
+      }
+    ];
+  };
+  environment.etc."git/config.private".text = ''
+    [user]
+    	name = Gee-Bee
+    	email = greg.bunia@gmail.com
+  '';
 
   # --- LISTA PAKIETÓW SYSTEMOWYCH ---
   environment.systemPackages = with pkgs; [
