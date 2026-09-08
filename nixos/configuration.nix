@@ -9,23 +9,32 @@ in
     ./t530-hardware-configuration.nix
   ];
 
-  # --- SYSTEM CORE & BOOT ---
+  # --- SYSTEM CORE, BOOT & ULTRA PERFORMANCE TUNING ---
   boot = {
+    kernelPackages = pkgs.linuxPackages_latest; # Wymuszenie najnowszej gałęzi jądra dla pełnego wsparcia sched_ext
     kernelParams = [
       "preempt=voluntary"
       "loglevel=4"
-      "nowatchdog" # Wyłączenie przerwań zegara watchdog dla chłodniejszego procesora
+      "nowatchdog"
+      "mitigations=off" # Odzyskanie 15-30% wydajności procesora poprzez wyłączenie łat sprzętowych
     ];
     kernel.sysctl = {
       "vm.swappiness" = 100;
       "vm.vfs_cache_pressure" = 50;
-      "net.core.default_qdisc" = "fq"; # Wymagane dla algorytmu BBR
-      "net.ipv4.tcp_congestion_control" = "bbr"; # Ultra-szybkie zarządzanie pakietami sieciowymi
+      "vm.page-cluster" = 0;
+      "vm.watermark_scale_factor" = 125; # Płynniejsze zarządzanie pamięcią wirtualną przy intensywnym użyciu ZRAM
+      "vm.zone_reclaim_mode" = 0; # Optymalizacja lokalnej alokacji stron pamięci dla CPU Ivy Bridge
+      "net.core.default_qdisc" = "fq";
+      "net.ipv4.tcp_congestion_control" = "bbr";
+      "io_uring_disabled" = 0; # Włączenie asynchronicznego I/O dla maksymalnej wydajności Podmana i edytorów kodu
     };
     extraModprobeConfig = "options btusb enable_autosuspend=0";
-    initrd.kernelModules = [ "i915" ]; # Wczesne ładowanie sterownika wideo dla grafiki Intel HD 4000
-    blacklistedKernelModules = [ "firewire_ohci" ]; # Wyłączenie szukania archaicznego portu FireWire
-    tmp.useTmpfs = true; # Przeniesienie katalogu /tmp do pamięci RAM dla oszczędzania SSD i szybkości
+    initrd.kernelModules = [ "i915" ];
+    blacklistedKernelModules = [
+      "firewire_ohci"
+      "tpm" # Wyłączenie inicjalizacji przestarzałego modułu TPM 1.2 dla szybszego bootowania
+    ];
+    tmp.useTmpfs = true;
     loader = {
       timeout = 1;
       grub = {
@@ -57,6 +66,12 @@ in
   services.geoclue2.enable = false;
   services.system76-scheduler.enable = true; # Dynamiczne nadawanie priorytetów aktywnym aplikacjom GUI
 
+  # Włączenie nowoczesnego planisty zadań eBPF zoptymalizowanego pod responsywność desktopu
+  services.scx = {
+    enable = true;
+    scheduler = "scx_lavd"; # Wybór planisty LAVD (Latency-Critical and Audio-Visual Desktop)
+  };
+
   # Optymalizacja systemd: wyłączenie zrzutów pamięci po awarii oraz skrócenie timeoutów (standard 26.05)
   systemd.coredump.enable = false;
   systemd.settings.Manager = {
@@ -86,20 +101,17 @@ in
   };
 
   # --- INTERFEJS GRAFICZNY (PLASMA 6) ---
-  services.xserver = {
-    enable = true;
-    deviceSection = ''
-      Option "AccelMethod" "sna"
-      Option "TearFree" "true"
-    ''; # Optymalizacja akceleracji 2D i eliminacja rozrywania ekranu dla Intel HD 4000
-  };
+  services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
   services.displayManager.defaultSession = "plasmax11"; # Wymuszenie sesji X11 dla stabilności na starszym GPU
 
   # --- SIEĆ I USŁUGI ---
   networking.hostName = "t530";
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
+    wifi.powersave = false; # Wyłączenie uśpienia Wi-Fi dla stabilnego pingu i pełnej przepustowości sieci
+  };
   services.printing.enable = false;
   services.pcscd.enable = false;
   services.fstrim.enable = true; # Automatyczne czyszczenie i konserwacja dysku SSD w tle
