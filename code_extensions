@@ -3,8 +3,7 @@
 ### VSCode extensions
 if command -v code > /dev/null 2>&1; then
   extensions=(
-    'ms-vscode-remote.remote-containers'
-    'GracefulPotato.gruvbox-ish'
+    'github.github-vscode-theme'
   )
   for extension in ${extensions[@]}; do
     code --install-extension $extension;
