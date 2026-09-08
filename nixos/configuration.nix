@@ -6,14 +6,14 @@ let
 in
 {
   imports = [
-    ./t530-hardware-configuration.nix
+    ./t530-generated-hardware-configuration.nix
   ];
 
   # --- SYSTEM CORE, BOOT & ULTRA PERFORMANCE TUNING ---
   boot = {
     kernelPackages = pkgs.linuxPackages_latest; # Wymuszenie najnowszej gałęzi jądra dla pełnego wsparcia sched_ext
     kernelParams = [
-      "preempt=voluntary"
+      "preempt=full"
       "loglevel=4"
       "nowatchdog"
       "mitigations=off" # Odzyskanie 15-30% wydajności procesora poprzez wyłączenie łat sprzętowych
@@ -26,7 +26,7 @@ in
       "vm.zone_reclaim_mode" = 0; # Optymalizacja lokalnej alokacji stron pamięci dla CPU Ivy Bridge
       "net.core.default_qdisc" = "fq";
       "net.ipv4.tcp_congestion_control" = "bbr";
-      "io_uring_disabled" = 0; # Włączenie asynchronicznego I/O dla maksymalnej wydajności Podmana i edytorów kodu
+      "kernel.io_uring_disabled" = 0; # Włączenie asynchronicznego I/O dla maksymalnej wydajności Podmana i edytorów kodu
     };
     extraModprobeConfig = "options btusb enable_autosuspend=0";
     initrd.kernelModules = [ "i915" ];
@@ -40,12 +40,17 @@ in
       grub = {
         enable = true;
         device = "/dev/sda";
-        useOSProber = true;
+        configurationLimit = 10;
       };
     };
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    keep-outputs = true;        # avoids re-building system-level derivations after GC
+    keep-derivations = true;
+    trusted-users = [ "gb" ];
+  };
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -134,6 +139,7 @@ in
 
   # --- PROFILE UŻYTKOWNIKÓW & ZABEZPIECZENIA ---
   nixpkgs.config.allowUnfree = true;
+
   security.sudo.extraRules = [
     {
       groups = [ "wheel" ];
@@ -157,6 +163,12 @@ in
     { domain = "*"; item = "memlock"; type = "-"; value = "unlimited"; }
   ];
 
+  # --- GPU: NVS 5400M is Fermi (GF108). Proprietary driver is a dead end here —
+  # legacy_470 dropped Fermi support, and legacy_390 (the correct branch) has
+  # been marked broken in nixpkgs for years (relies on kernel APIs removed
+  # around 5.17-6.1, e.g. PDE_DATA()/pci_set_dma_mask, never re-patched).
+  # Sticking with nouveau; videoDrivers left at its default.
+
   # --- WIRTUALIZACJA I DOCKER ---
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
@@ -175,8 +187,6 @@ in
     algorithm = "zstd";
     memoryPercent = 50;
   };
-  hardware.enableAllFirmware = true;
-  hardware.firmware = [ pkgs.broadcom-bt-firmware ];
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
