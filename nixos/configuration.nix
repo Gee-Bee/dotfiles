@@ -69,7 +69,6 @@ in
 
   services.journald.extraConfig = "Compress=yes\n";
   services.geoclue2.enable = false;
-  services.system76-scheduler.enable = true; # Dynamiczne nadawanie priorytetów aktywnym aplikacjom GUI
 
   # Włączenie nowoczesnego planisty zadań eBPF zoptymalizowanego pod responsywność desktopu
   services.scx = {
