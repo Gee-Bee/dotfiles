@@ -2,23 +2,15 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, nixpkgs-25-11, ... }:
 
 let
-  # Pobieramy stabilne archiwum kanału NixOS 25.11 bez używania problematycznych linków GitHub
-  pkgs-25-11-src = builtins.fetchTarball {
-    url = "https://channels.nixos.org/nixos-25.11/nixexprs.tar.xz";
-    sha256 = "sha256:1m4ivgs9j5wb7yna6ab0lr1vyvkcncn3zvk978amcswadci5lsi1";
-  };
-
-  pkgs-25-11 = import pkgs-25-11-src {
-    config = config.nixpkgs.config;
-  };
+  pkgs-25-11 = nixpkgs-25-11.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   imports =
     [ # Include the results of the hardware scan.
-      /etc/nixos/hardware-configuration.nix
+      ./t530-hardware-configuration.nix
     ];
 
 #   swapDevices = [ {
@@ -251,8 +243,8 @@ in
         set fish_greeting ""
       '';
       shellAliases = {
-        nix-up = "sudo nixos-rebuild switch --impure --flake ~/src/dotfiles/nixos/#t530";
-        nix-test = "sudo nixos-rebuild dry-activate --impure --flake ~/src/dotfiles/nixos/#t530";
+        nix-up = "sudo nixos-rebuild switch --flake ~/src/dotfiles/nixos/#t530";
+        nix-test = "sudo nixos-rebuild dry-activateb --flake ~/src/dotfiles/nixos/#t530";
       };
     };
     #kdeconnect.enable = true;
@@ -327,14 +319,8 @@ in
   #virtualisation.virtualbox.guest.dragAndDrop = true;
   #users.extraGroups.vboxusers.members = [ "gb" ];
 
-  # --- USTAWIENIA MENEDŻERA NIX ---
   nix.settings = {
     # Włączenie nowoczesnej komendy 'nix' oraz obsługi Flakes
     experimental-features = [ "nix-command" "flakes" ];
-
-    # Zezwolenie Flake'om w trybie czystym (pure) na dostęp do oryginalnego
-    # pliku sprzętowego w /etc/nixos. Dzięki temu unikamy błędu 'forbidden
-    # in pure evaluation mode' bez konieczności kopiowania pliku do dotfiles.
-    allowed-impure-host-deps = [ "/etc/nixos" ];
   };
 }
