@@ -20,9 +20,9 @@ in
       "mitigations=off" # Odzyskanie 15-30% wydajności procesora poprzez wyłączenie łat sprzętowych
     ];
     kernel.sysctl = {
-      "vm.swappiness" = 100;
-      "vm.vfs_cache_pressure" = 10;
-      "vm.page-cluster" = 0;
+      "vm.swappiness" = 10; # SSD tylko RAM będzie na skraju wyczerpania.
+      "vm.vfs_cache_pressure" = 60; # Agresywniejsze zwalnianie pamięci podręcznej dysku zamiast swapowania aplikacji
+      "vm.page-cluster" = 0; # Wyłączenie czytania blokowego ze swapu. Zapobiega zamrażaniu GUI na SSD.
       "vm.watermark_scale_factor" = 125; # Płynniejsze zarządzanie pamięcią wirtualną przy intensywnym użyciu ZRAM
       "vm.zone_reclaim_mode" = 0; # Optymalizacja lokalnej alokacji stron pamięci dla CPU Ivy Bridge
       "net.core.default_qdisc" = "fq";
@@ -116,6 +116,9 @@ in
   networking.networkmanager = {
     enable = true;
     wifi.powersave = false; # Wyłączenie uśpienia Wi-Fi dla stabilnego pingu i pełnej przepustowości sieci
+    plugins = with pkgs; [
+      networkmanager-openvpn
+    ];
   };
   services.fstrim.enable = true; # Automatyczne czyszczenie i konserwacja dysku SSD w tle
   security.rtkit.enable = true;
@@ -171,12 +174,13 @@ in
     };
   };
 
-  # --- OPTYMALIZACJA PAMIĘCI (ZRAM) & SPRZĘTU ---
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 50;
-  };
+  # --- OPTYMALIZACJA PAMIĘCI (SWAP SSD) & SPRZĘTU ---
+  zramSwap.enable = false; # Wyłączenie ZRAM, aby odciążyć CPU ze stałej kompresji
+
+  swapDevices = [ {
+    device = "/var/lib/swapfile";
+    size = 16384; # 16 GB bezpiecznego bufora na dysku SSD
+  } ];
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
