@@ -7,7 +7,8 @@ in
 {
   imports = [
     ./t530-generated-hardware-configuration.nix
-    ./thumbnails-pregeneration.nix
+    ./modules/thumbnails-pregeneration.nix
+    ./modules/upgrade-on-shutdown.nix
   ];
 
   # --- SYSTEM CORE, BOOT & ULTRA PERFORMANCE TUNING ---
