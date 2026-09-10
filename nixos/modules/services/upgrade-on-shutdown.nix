@@ -36,6 +36,8 @@ let
   '';
 in
 {
+  # Laptop stoi stacjonarnie w pracy, więc dłuższe wyłączanie raz na tydzień
+  # jest akceptowalne — świadomie zostawione jako ExecStop, a nie timer w tle.
   systemd.services.upgrade-on-shutdown = {
     description = "NixOS Flake Upgrade on Shutdown (Weekly Pure with Git Commit)";
 
