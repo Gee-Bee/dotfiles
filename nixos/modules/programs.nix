@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, primaryUser, ... }:
 
 {
   # --- WIRTUALIZACJA I DOCKER ---
@@ -81,8 +81,8 @@
       }
       {
         includeIf = {
-          "gitdir/i:**/src/_priv/**"     = { path = "/etc/git/config.private"; };
-          "gitdir/i:**/src/{.,}dotfiles/**" = { path = "/etc/git/config.private"; };
+          "hasconfig:remote.*.url:git@github.com:Gee-Bee/**"        = { path = "/etc/git/config.private"; };
+          "hasconfig:remote.*.url:https://github.com/Gee-Bee/**"    = { path = "/etc/git/config.private"; };
         };
       }
     ];
@@ -92,6 +92,9 @@
     	name = Gee-Bee
     	email = greg.bunia@gmail.com
   '';
+  systemd.tmpfiles.rules = [
+    "L+ /home/${primaryUser}/.gitconfig - - - - /etc/gitconfig"
+  ];
 
   # --- LISTA PAKIETÓW SYSTEMOWYCH ---
   environment.systemPackages = with pkgs; [

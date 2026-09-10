@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, primaryUser, ... }:
 
 {
   # --- PROFILE UŻYTKOWNIKÓW & ZABEZPIECZENIA ---
@@ -6,9 +6,9 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  users.users.gb = {
+  users.users.${primaryUser} = {
     isNormalUser = true;
-    description = "GB";
+    description = lib.toUpper primaryUser;
     linger = true;
     extraGroups = [
       "networkmanager"

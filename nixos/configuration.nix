@@ -1,6 +1,11 @@
 { config, pkgs, lib, ... }:
 
+let
+  primaryUser = "gb";
+in
 {
+  _module.args.primaryUser = primaryUser;
+
   imports = [
     ./t530-generated-hardware-configuration.nix
     ./modules/boot.nix

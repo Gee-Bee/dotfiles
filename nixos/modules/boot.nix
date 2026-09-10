@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, primaryUser, ... }:
 
 {
   # --- SYSTEM CORE, BOOT & ULTRA PERFORMANCE TUNING ---
@@ -47,7 +47,7 @@
   nix.optimise.automatic = true;
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
-    trusted-users = [ "gb" ];
+    trusted-users = [ primaryUser ];
   };
   nix.gc = {
     automatic = true;
