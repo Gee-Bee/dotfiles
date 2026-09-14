@@ -6,6 +6,7 @@
       url = "github:Mendior/on-air-plasmoid";
       flake = false;
     };
+    llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
   outputs =
@@ -14,6 +15,7 @@
       nixpkgs,
       nixpkgs-25-11,
       on-air-plasmoid,
+      llm-agents,
     }:
     {
       nixosConfigurations.t530 = nixpkgs.lib.nixosSystem {
@@ -21,7 +23,9 @@
         specialArgs = {
           inherit
             nixpkgs-25-11
-            on-air-plasmoid;
+            on-air-plasmoid
+            llm-agents
+          ;
         };
         modules = [ ./configuration.nix ];
       };

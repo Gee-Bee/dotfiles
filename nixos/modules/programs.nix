@@ -14,25 +14,6 @@
     };
   };
 
-  # --- LOCAL AI ENGINE (OLLAMA OPTIMIZED FOR CPU) ---
-  services.ollama = {
-    enable = true;
-
-    host = "0.0.0.0";
-    port = 11434;
-    openFirewall = false;
-
-    package = pkgs.ollama-cpu;
-
-    # Oficjalne, poprawne nazwy modeli z rejestru Ollama:
-    loadModels = [
-      # 1. AUTOUZUPEŁNIANIE KODU (FIM / Tab completion)
-      "qwen2.5-coder:0.5b-base" # Błyskawiczny (0.5B), niemal natychmiastowe podpowiedzi
-      # 2. CZAT, EDYCJA I REFAKTORYZACJA (Twinny Chat)
-      "qwen2.5-coder:1.5b-instruct"
-    ];
-  };
-
   # --- PROGRAMY I USŁUGI WBUDOWANE ---
   programs = {
     firefox.enable = true;
