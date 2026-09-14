@@ -16,6 +16,7 @@ in
     ./modules/programs.nix
     ./modules/services/upgrade-on-shutdown.nix
     ./modules/services/thumbnails-pregeneration.nix
+    ./modules/desktop/plasmoids/on-air
   ];
 
   # This value determines the NixOS release from which the default
