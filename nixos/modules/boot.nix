@@ -63,8 +63,20 @@
     scheduler = "scx_lavd"; # Wybór planisty LAVD (Latency-Critical and Audio-Visual Desktop)
   };
 
-  # Optymalizacja systemd: wyłączenie zrzutów pamięci po awarii oraz skrócenie timeoutów (standard 26.05)
-  systemd.coredump.enable = false;
+  # Crash dump przez systemd-coredump: zero kosztu w normalnej pracy, miejsce
+  # limitowane (256M/zrzut, 512M łącznie). Wyłączenie tej opcji powodowało
+  # zrzuty core.<PID> prosto do $HOME przez kernelowy core_pattern.
+  systemd.coredump = {
+    enable = true;
+    settings.Coredump = {
+      ProcessSizeMax = "256M";
+      ExternalSizeMax = "256M";
+      MaxUse = "512M";
+      KeepFree = "1G";
+    };
+  };
+
+  # Krótsze timeouty startu/zatrzymania jednostek (standard 26.05).
   systemd.settings.Manager = {
     DefaultTimeoutStartSec = "10s";
     DefaultTimeoutStopSec = "10s";
