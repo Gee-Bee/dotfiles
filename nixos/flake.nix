@@ -6,7 +6,17 @@
       url = "github:Mendior/on-air-plasmoid";
       flake = false;
     };
-    llm-agents.url = "github:numtide/llm-agents.nix";
+    # Freebuff CLI and Desktop are separate, independently-versioned release
+    # trains (no flake). To bump: edit the version in the URL below, then
+    # `nix flake lock --update-input <name>` to fetch and pin the new hash.
+    freebuff-cli-src = {
+      url = "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v0.0.173/freebuff-linux-x64-baseline.tar.gz";
+      flake = false;
+    };
+    freebuff-desktop-src = {
+      url = "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v0.0.106/Freebuff-0.0.106-linux-x86_64.AppImage";
+      flake = false;
+    };
   };
 
   outputs =
@@ -15,7 +25,8 @@
       nixpkgs,
       nixpkgs-25-11,
       on-air-plasmoid,
-      llm-agents,
+      freebuff-cli-src,
+      freebuff-desktop-src,
     }:
     {
       nixosConfigurations.t530 = nixpkgs.lib.nixosSystem {
@@ -24,7 +35,8 @@
           inherit
             nixpkgs-25-11
             on-air-plasmoid
-            llm-agents
+            freebuff-cli-src
+            freebuff-desktop-src
           ;
         };
         modules = [ ./configuration.nix ];
