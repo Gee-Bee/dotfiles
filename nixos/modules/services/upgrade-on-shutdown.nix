@@ -1,8 +1,8 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
-  upgradeScript = pkgs.writeScript "upgrade-on-shutdown-fish" ''
-    #!${pkgs.fish}/bin/fish
+  # writeFishBin: automatyczny shebang fish + walidacja składni przy buildzie
+  upgradeScript = pkgs.writers.writeFishBin "upgrade-on-shutdown" ''
 
     function log
       echo ">>> $argv"
@@ -50,7 +50,7 @@ in
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStop = "${upgradeScript}";
+      ExecStop = lib.getExe upgradeScript;
       TimeoutStopSec = "30min";
       StandardOutput = "journal+console";
       StandardError = "journal+console";

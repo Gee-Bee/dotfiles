@@ -1,8 +1,8 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
-  thumbnailScript = pkgs.writeScript "preemptive-thumbnails-fish" ''
-    #!${pkgs.fish}/bin/fish
+  # writeFishBin: automatyczny shebang fish + walidacja składni przy buildzie
+  thumbnailScript = pkgs.writers.writeFishBin "preemptive-thumbnails" ''
 
     # The freedesktop.org Thumbnail Managing Standard requires cache files to be
     # mode 0600 (thumbnails can leak the existence/content of private files to
@@ -84,7 +84,7 @@ in
 
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${thumbnailScript}";
+      ExecStart = lib.getExe thumbnailScript;
       Restart = "on-failure";
       RestartSec = "5s";
     };
