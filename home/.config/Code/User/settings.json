@@ -20,6 +20,5 @@
     "terminal.integrated.enableMultiLinePasteWarning": "never",
     "diffEditor.ignoreTrimWhitespace": false,
     "terminal.integrated.scrollback": 10000,
-    "redoclyOpenAPI.user.anonymousId": "ann_01KC6HCZHXJD62KTDJBKGPQBBX",
     "task.allowAutomaticTasks": "on"
 }
