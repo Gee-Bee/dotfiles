@@ -15,13 +15,6 @@ links: $(srcfiles)
 chmod:
 	[ -d home/bin ] && chmod +x home/bin/* || true
 
-.PHONY: setup
-setup: code_extensions
-
-.PHONY: code_extensions
-code_extensions:
-	./code_extensions
-
 .PHONY: zprezto
 zprezto:
 	sudo dnf install -y zsh git

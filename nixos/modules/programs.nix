@@ -37,6 +37,14 @@
         nix-test = "sudo nixos-rebuild test --flake ~/src/dotfiles/nixos/#t530";
       };
     };
+    vscode = {
+      enable = true;
+      # Same fhs environment as before; the module wraps it, so declared extensions load in the sandbox
+      package = pkgs.vscode.fhs;
+      extensions = with pkgs.vscode-extensions; [
+        github.github-vscode-theme
+      ];
+    };
     tmux = {
       enable = true;
       baseIndex = 1;
@@ -83,7 +91,6 @@
   environment.systemPackages = with pkgs; [
     htop
     gnumake
-    vscode.fhs
     firefox-devedition
     google-chrome
     lshw
