@@ -9,6 +9,7 @@
 - Przed pokazaniem przejrzyj kod raz pod kątem powyższych zasad i sprawdź składnię (np. eval); testy i dłuższe buildy zostaw użytkownikowi.
 
 ## Komentarze
+- Komentarz dotyczący konkretnej linii: na jej końcu lub tuż nad nią — nigdy przy nagłówku bloku; opcja i jej uzasadnienie zmieniają się razem.
 - Komentarz uzasadnia decyzję (dlaczego tak), nie opisuje oczywistego "co robi kod".
 - Każdy komentarz jest atomowy i samowystarczalny: czytelnik pliku nie zna historii git, diffów ani wcześniejszych rozmów. Zakaz fraz typu "bez zmian", "przywrócone", "tymczasowe", "wcześniej", "wg dyskusji".
 - Zwięzłość: domyślnie 1 linia, maksymalnie 2. Jeśli treść się nie mieści — skróć do jednej decyzji, nie tłumacz mechanizmu. Komentarz tylko tam, gdzie kod sam się nie tłumaczy.

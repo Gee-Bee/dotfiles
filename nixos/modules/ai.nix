@@ -1,9 +1,8 @@
-{ config, pkgs, freebuff-cli-src, freebuff-desktop-src, ... }:
+{ pkgs, freebuff-cli-src, freebuff-desktop-src, ... }:
 
 let
-  # "-baseline" build: T530 (Ivy Bridge) has no AVX2, and freebuff's default
-  # linux-x64 binary hard-crashes with SIGILL there (upstream:
-  # CodebuffAI/freebuff #497, #654, #765, #1288).
+  # "-baseline" build: T530 (Ivy Bridge) has no AVX2 — the default binary dies with SIGILL
+  # (CodebuffAI/freebuff #497, #654, #765, #1288).
   freebuff-cli = pkgs.stdenv.mkDerivation {
     pname = "freebuff-cli";
     version = "unstable"; # actual version is pinned via the src URL in flake.nix
@@ -32,7 +31,7 @@ let
   };
 in
 {
-  # --- LOCAL AI ENGINE (OLLAMA OPTIMIZED FOR CPU) ---
+  # --- LOCAL AI ENGINE (OLLAMA, CPU-ONLY) ---
   services.ollama = {
     enable = true;
     host = "0.0.0.0";
@@ -45,7 +44,7 @@ in
     ];
   };
 
-  # --- TERMINALOWY I DESKTOPOWY AGENT KODUJĄCY (FREEBUFF, DARMOWY) ---
+  # --- FREEBUFF CODING AGENT (CLI + DESKTOP) ---
   environment.systemPackages = [
     freebuff-cli
     freebuff-desktop

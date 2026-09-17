@@ -1,30 +1,30 @@
-{ config, pkgs, lib, primaryUser, ... }:
+{ pkgs, primaryUser, ... }:
 
 {
-  # --- SYSTEM CORE, BOOT & ULTRA PERFORMANCE TUNING ---
+  # --- SYSTEM CORE, BOOT & PERFORMANCE TUNING ---
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest; # Wymuszenie najnowszej gałęzi jądra dla pełnego wsparcia sched_ext
+    # mitigations=off rejected: 15-30% CPU gain not worth disabling hardware vulnerability mitigations
     kernelParams = [
       "preempt=full"
       "loglevel=4"
       "nowatchdog"
-      # "mitigations=off" # Ryzykowne: Odzyskanie 15-30% wydajności procesora poprzez wyłączenie łat sprzętowych
     ];
+    kernelPackages = pkgs.linuxPackages_latest; # latest kernel branch for full sched_ext support
     kernel.sysctl = {
-      "vm.swappiness" = 10; # SSD tylko RAM będzie na skraju wyczerpania.
-      "vm.vfs_cache_pressure" = 60; # Agresywniejsze zwalnianie pamięci podręcznej dysku zamiast swapowania aplikacji
-      "vm.page-cluster" = 0; # Wyłączenie czytania blokowego ze swapu. Zapobiega zamrażaniu GUI na SSD.
-      "vm.watermark_scale_factor" = 125; # Płynniejsze zarządzanie pamięcią wirtualną przy intensywnym użyciu ZRAM
-      "vm.zone_reclaim_mode" = 0; # Optymalizacja lokalnej alokacji stron pamięci dla CPU Ivy Bridge
-      "net.core.default_qdisc" = "fq";
+      "vm.swappiness" = 10; # swap only when RAM is nearly exhausted
+      "vm.vfs_cache_pressure" = 60; # prefer reclaiming FS caches over swapping applications
+      "vm.page-cluster" = 0; # no swap readahead — prevents GUI freezes when swapping on SSD
+      "vm.watermark_scale_factor" = 125; # smoother reclaim under memory pressure
+      "vm.zone_reclaim_mode" = 0; # keep NUMA-local page allocation on Ivy Bridge
+      "net.core.default_qdisc" = "fq"; # required by bbr
       "net.ipv4.tcp_congestion_control" = "bbr";
-      "kernel.io_uring_disabled" = 0; # Włączenie asynchronicznego I/O dla maksymalnej wydajności Podmana i edytorów kodu
+      "kernel.io_uring_disabled" = 0; # async I/O for container workloads and editors
     };
-    extraModprobeConfig = "options btusb enable_autosuspend=0";
+    extraModprobeConfig = "options btusb enable_autosuspend=0"; # autosuspend drops Bluetooth audio devices
     initrd.kernelModules = [ "i915" ];
     blacklistedKernelModules = [
       "firewire_ohci"
-      "tpm" # Wyłączenie inicjalizacji przestarzałego modułu TPM 1.2 dla szybszego bootowania
+      "tpm" # deprecated TPM 1.2 — init slows boot
     ];
     tmp.useTmpfs = true;
     loader = {
@@ -37,11 +37,8 @@
     };
   };
 
-  # Wymagane, żeby hardware.cpu.intel.updateMicrocode (ustawione w
-  # t530-generated-hardware-configuration.nix jako mkDefault) faktycznie się
-  # włączyło — bez tego domyślna wartość to false i mikrokod Intela (ważny
-  # dla stabilności i łatek Spectre/Meltdown na starym Ivy Bridge) nigdy się
-  # nie ładuje.
+  # Required for hardware.cpu.intel.updateMicrocode (mkDefault in the hardware config) to take
+  # effect — without it Intel microcode (Spectre/Meltdown fixes on Ivy Bridge) never loads.
   hardware.enableRedistributableFirmware = true;
 
   nix.optimise.automatic = true;
@@ -57,15 +54,14 @@
 
   services.journald.extraConfig = "Compress=yes\n";
 
-  # Włączenie nowoczesnego planisty zadań eBPF zoptymalizowanego pod responsywność desktopu
+  # eBPF scheduler tuned for desktop responsiveness; LAVD targets latency-critical workloads
   services.scx = {
     enable = true;
-    scheduler = "scx_lavd"; # Wybór planisty LAVD (Latency-Critical and Audio-Visual Desktop)
+    scheduler = "scx_lavd";
   };
 
-  # Crash dump przez systemd-coredump: zero kosztu w normalnej pracy, miejsce
-  # limitowane (256M/zrzut, 512M łącznie). Wyłączenie tej opcji powodowało
-  # zrzuty core.<PID> prosto do $HOME przez kernelowy core_pattern.
+  # systemd-coredump: no cost in normal operation, capped space (256M/dump, 512M total);
+  # when disabled, the kernel instead writes raw core.<PID> dumps straight into $HOME.
   systemd.coredump = {
     enable = true;
     settings.Coredump = {
@@ -76,18 +72,18 @@
     };
   };
 
-  # Krótsze timeouty startu/zatrzymania jednostek (standard 26.05).
+  # Shorter unit start/stop timeouts than the 90s default.
   systemd.settings.Manager = {
     DefaultTimeoutStartSec = "10s";
     DefaultTimeoutStopSec = "10s";
   };
 
-  # --- OPTYMALIZACJA PAMIĘCI (SWAP SSD) & SPRZĘTU ---
-  zramSwap.enable = false; # Wyłączenie ZRAM, aby odciążyć CPU ze stałej kompresji
+  # --- MEMORY (SWAP ON SSD) & HARDWARE ---
+  zramSwap.enable = false; # constant compression cost not worth it on this CPU
 
   swapDevices = [ {
     device = "/var/lib/swapfile";
-    size = 16384; # 16 GB bezpiecznego bufora na dysku SSD
+    size = 16384; # OOM safety buffer on SSD
   } ];
 
   hardware.graphics = {
@@ -97,17 +93,14 @@
     ];
   };
 
-  # --- GPU: NVS 5400M is Fermi (GF108). Proprietary driver is a dead end here —
-  # legacy_470 dropped Fermi support, and legacy_390 (the correct branch) has
-  # been marked broken in nixpkgs for years (relies on kernel APIs removed
-  # around 5.17-6.1, e.g. PDE_DATA()/pci_set_dma_mask, never re-patched).
-  # Sticking with nouveau; videoDrivers left at its default.
+  # NVS 5400M is Fermi: legacy_470 dropped it and legacy_390 (the correct branch) has been
+  # broken in nixpkgs for years — nouveau with default videoDrivers is the only workable option.
 
-  # Zaawansowany tuning warstwy blokowej dla dysków SSD (Kyber + wyłączenie add_random)
+  # SSD block-layer tuning: kyber scheduler, no entropy contribution from disk reads
   services.udev.extraRules = ''
     ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="kyber"
     ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/add_random}="0"
   '';
 
-  services.fstrim.enable = true; # Automatyczne czyszczenie i konserwacja dysku SSD w tle
+  services.fstrim.enable = true;
 }

@@ -1,12 +1,12 @@
-{ config, pkgs, primaryUser, ... }:
+{ pkgs, primaryUser, ... }:
 
 {
-  # --- WIRTUALIZACJA I DOCKER ---
+  # --- VIRTUALIZATION & DOCKER ---
   virtualisation.docker = {
     enable = true;
     autoPrune = {
       enable = true;
-      flags = [ "--all" ]; # też cache i stare obrazy
+      flags = [ "--all" ]; # also cache and stale images
     };
     rootless = {
       enable = true;
@@ -14,7 +14,7 @@
     };
   };
 
-  # --- PROGRAMY I USŁUGI WBUDOWANE ---
+  # --- BUILT-IN PROGRAMS & SERVICES ---
   programs = {
     firefox.enable = true;
     starship.enable = true;
@@ -79,7 +79,7 @@
     "L+ /home/${primaryUser}/.gitconfig - - - - /etc/static/gitconfig"
   ];
 
-  # --- LISTA PAKIETÓW SYSTEMOWYCH ---
+  # --- SYSTEM PACKAGES ---
   environment.systemPackages = with pkgs; [
     htop
     gnumake

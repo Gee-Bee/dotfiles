@@ -1,7 +1,6 @@
 { config, pkgs, lib, ... }:
 
 let
-  # writeFishBin: automatyczny shebang fish + walidacja składni przy buildzie
   upgradeScript = pkgs.writers.writeFishBin "upgrade-on-shutdown" ''
 
     function log
@@ -36,8 +35,7 @@ let
   '';
 in
 {
-  # Laptop stoi stacjonarnie w pracy, więc dłuższe wyłączanie raz na tydzień
-  # jest akceptowalne — świadomie zostawione jako ExecStop, a nie timer w tle.
+  # Weekly rebuild at shutdown is acceptable on a docked workstation — deliberately ExecStop, not a timer.
   systemd.services.upgrade-on-shutdown = {
     description = "NixOS Flake Upgrade on Shutdown (Weekly Pure with Git Commit)";
 

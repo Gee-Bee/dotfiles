@@ -6,9 +6,8 @@
       url = "github:Mendior/on-air-plasmoid";
       flake = false;
     };
-    # Freebuff CLI and Desktop are separate, independently-versioned release
-    # trains (no flake). To bump: edit the version in the URL below, then
-    # `nix flake lock --update-input <name>` to fetch and pin the new hash.
+    # Freebuff CLI and Desktop are separate, independently-versioned release trains (no flake).
+    # Bump: edit the version in the URL, then `nix flake lock --update-input <name>`.
     freebuff-cli-src = {
       url = "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v0.0.173/freebuff-linux-x64-baseline.tar.gz";
       flake = false;

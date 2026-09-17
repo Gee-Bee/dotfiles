@@ -1,7 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, lib, ... }:
 
 let
-  # writeFishBin: automatyczny shebang fish + walidacja składni przy buildzie
   thumbnailScript = pkgs.writers.writeFishBin "preemptive-thumbnails" ''
 
     # The freedesktop.org Thumbnail Managing Standard requires cache files to be
