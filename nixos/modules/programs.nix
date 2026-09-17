@@ -61,9 +61,10 @@
         user.email = "g.bunia@american-systems.pl";
       }
       {
+        # Resolves inside FHS sandboxes (vscode.fhs); a direct /etc/git path dangles there.
         includeIf = {
-          "hasconfig:remote.*.url:git@github.com:Gee-Bee/**"        = { path = "/etc/git/config.private"; };
-          "hasconfig:remote.*.url:https://github.com/Gee-Bee/**"    = { path = "/etc/git/config.private"; };
+          "hasconfig:remote.*.url:git@github.com:Gee-Bee/**"        = { path = "/etc/static/git/config.private"; };
+          "hasconfig:remote.*.url:https://github.com/Gee-Bee/**"    = { path = "/etc/static/git/config.private"; };
         };
       }
     ];
@@ -73,8 +74,9 @@
     	name = Gee-Bee
     	email = greg.bunia@gmail.com
   '';
+  # Resolves inside FHS sandboxes (vscode.fhs); a direct /etc/gitconfig target dangles there.
   systemd.tmpfiles.rules = [
-    "L+ /home/${primaryUser}/.gitconfig - - - - /etc/gitconfig"
+    "L+ /home/${primaryUser}/.gitconfig - - - - /etc/static/gitconfig"
   ];
 
   # --- LISTA PAKIETÓW SYSTEMOWYCH ---
