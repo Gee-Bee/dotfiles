@@ -2,7 +2,7 @@ srcfiles := $(shell find home -type f)
 destfiles := $(patsubst home/%,~/%,$(srcfiles))
 
 .PHONY: all
-all: links chmod
+all: links
 
 home/%:
 	@[ -d $(dir ~/$*) ] || mkdir -p $(dir ~/$*)
@@ -10,25 +10,6 @@ home/%:
 
 .PHONY: links
 links: $(srcfiles)
-
-.PHONY: chmod
-chmod:
-	[ -d home/bin ] && chmod +x home/bin/* || true
-
-.PHONY: zprezto
-zprezto:
-	sudo dnf install -y zsh git
-	git clone --recursive git@github.com:Gee-Bee/prezto.git ~/.zprezto
-	make -C ~/.zprezto
-	chsh -s /bin/zsh
-
-.PHONY: bash-it
-bash-it:
-	git clone --depth=1 https://github.com/Bash-it/bash-it.git ~/.bash_it
-	rm -rf ~/.bash_it/custom
-	git clone git@github.com:Gee-Bee/bash-it-custom.git ~/.bash_it/custom
-	~/.bash_it/install.sh
-	echo 'eval "$(starship init bash)"' >> ~/.bashrc
 
 .PHONY: clean
 clean:
