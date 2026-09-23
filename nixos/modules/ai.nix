@@ -1,4 +1,4 @@
-{ pkgs, freebuff-cli-src, freebuff-desktop-src, ... }:
+{ pkgs, freebuff-cli-src, freebuff-desktop-src, llm-agents, ... }:
 
 let
   # "-baseline" build: T530 (Ivy Bridge) has no AVX2 — the default binary dies with SIGILL
@@ -31,6 +31,11 @@ let
   };
 in
 {
+  # Overlay from llm-agents builds the packages against THIS system's pkgs
+  # (shared libs, our allowUnfree); the flake's own packages would instead
+  # drag in a second ~1 GiB nixpkgs-unstable closure.
+  nixpkgs.overlays = [ llm-agents.overlays.shared-nixpkgs ];
+
   # --- LOCAL AI ENGINE (OLLAMA, CPU-ONLY) ---
   services.ollama = {
     enable = true;
@@ -44,9 +49,12 @@ in
     ];
   };
 
-  # --- FREEBUFF CODING AGENT (CLI + DESKTOP) ---
+  # --- AI CODING AGENTS (FREEBUFF + CLAUDE) ---
   environment.systemPackages = [
     freebuff-cli
     freebuff-desktop
+    # FHS wrapper also runs the generic binaries the app downloads at runtime
+    pkgs.llm-agents.claude-desktop # chat works on free accounts; project features need Pro/Max on the account
+    pkgs.llm-agents.claude-code # for repo work: terminal or a VS Code extension, not the desktop app
   ];
 }

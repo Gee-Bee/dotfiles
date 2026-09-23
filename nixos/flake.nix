@@ -6,6 +6,12 @@
       url = "github:Mendior/on-air-plasmoid";
       flake = false;
     };
+    # Claude Desktop + Claude Code CLI; packages expose a single hard-coded
+    # version per commit, bumped by `nix flake lock --update-input llm-agents`.
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Freebuff CLI and Desktop are separate, independently-versioned release trains (no flake).
     # Bump: edit the version in the URL, then `nix flake lock --update-input <name>`.
     freebuff-cli-src = {
@@ -24,6 +30,7 @@
       nixpkgs,
       nixpkgs-25-11,
       on-air-plasmoid,
+      llm-agents,
       freebuff-cli-src,
       freebuff-desktop-src,
     }:
@@ -34,6 +41,7 @@
           inherit
             nixpkgs-25-11
             on-air-plasmoid
+            llm-agents
             freebuff-cli-src
             freebuff-desktop-src
           ;
