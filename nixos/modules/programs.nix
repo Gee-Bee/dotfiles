@@ -67,8 +67,15 @@
           "hasconfig:remote.*.url:https://github.com/Gee-Bee/**"    = { path = "/etc/static/git/config.private"; };
         };
       }
+      {
+        # /etc/git is not visible inside FHS sandboxes; /etc/static is.
+        core.excludesFile = "/etc/static/git/gitignore-global";
+      }
     ];
   };
+  environment.etc."git/gitignore-global".text = ''
+    .freebuff/
+  '';
   environment.etc."git/config.private".text = ''
     [user]
     	name = Gee-Bee
