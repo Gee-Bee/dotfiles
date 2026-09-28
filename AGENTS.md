@@ -2,8 +2,11 @@
 
 ## Proces
 - Zmiana podejścia to nowy punkt wyjścia: konfigurację lub kod wyprowadź od zera, a decyzje poprzedniego podejścia (zwłaszcza usunięcia) uzasadnij na nowo.
+- Kod zastany w drzewie roboczym to propozycja, nie zaakceptowana decyzja: jego podejście oceniaj od zera, zanim naprawisz, przebudujesz lub przetestujesz szczegóły.
 - Po zwinięciu dorywczej struktury (wydzielony plik, helper) wróć do pytania o jej zasadność — tymczasowe bywa wieczne.
+- Automatyzację rzadkiej procedury uzasadniaj porównaniem z jej wersją ręczną: gdy awaria mechanizmu boli bardziej niż jej ręczne wykonanie, proponuj usunięcie mechanizmu, nie jego naprawę.
 - Eval/build dowodzi spójności, nie kompletności — po refactorze sprawdź end-to-end, że wynik nadal dostarcza to, co poprzednio (obecność pakietu, unitu, ścieżki).
+- Jeśli najbardziej ryzykowna część zmiany jest nietestowalna w piaskownicy (integracja z żywym systemem), rekomendacja musi to nazywać i zawierać wariant rezygnacji; zielone światło obejmuje tylko to, co przetestowano.
 - Przed pokazaniem przejrzyj kod raz pod kątem zasad sekcji Kod i sprawdź składnię (np. eval); testy i dłuższe buildy zostaw użytkownikowi.
 - Minimalne, celowe diffy — refaktoryzacja tylko, gdy jest częścią zadania.
 - Nie commituj i nie pushuj bez wyraźnej prośby — na koniec pokaż diff i czekaj na decyzję.
@@ -16,6 +19,10 @@
 - Nie koduj ponad zadanie — dodatkowe usprawnienia zgłaszaj, nie wdrażaj.
 - Nowy plik tylko, gdy przenosi realną odpowiedzialność; mikroplik z jedną funkcją zostaje w module macierzystym.
 - Styl istniejącego pliku wygrywa z preferencjami; naruszenia powyższych zasad w dotykanym kodzie poprawiaj od razu, poza dotykanym kodem — tylko zgłoś.
+
+## Dokumentacja
+- Nowa linia w Markdown tylko tam, gdzie niesie strukturę (pusta linia, punktor, nagłówek, blok kodu, tabela) — akapit to jedna linia źródła; miękkie zawijanie zostaw edytorowi.
+- Instrukcje i dokumentacja po angielsku, jak komentarze.
 
 ## Komentarze
 - Komentarz dotyczący konkretnej linii: na jej końcu lub tuż nad nią — nigdy przy nagłówku bloku; opcja i jej uzasadnienie zmieniają się razem.

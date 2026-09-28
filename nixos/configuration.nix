@@ -15,6 +15,7 @@ in
     ./modules/users.nix
     ./modules/programs.nix
     ./modules/ai.nix
+    ./modules/nix-on-droid.nix
     ./modules/services/upgrade-on-shutdown.nix
     ./modules/services/thumbnails-pregeneration.nix
     ./modules/desktop/plasmoids/on-air
