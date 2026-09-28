@@ -14,12 +14,13 @@
     };
     # Freebuff CLI and Desktop are separate, independently-versioned release trains (no flake).
     # Bump: edit the version in the URL, then `nix flake lock --update-input <name>`.
+    # check versions with: `git ls-remote --tags https://github.com/CodebuffAI/codebuff-community | grep freebuff | awk '{print $2}' | sort -V`
     freebuff-cli-src = {
-      url = "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v0.0.173/freebuff-linux-x64-baseline.tar.gz";
+      url = "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v0.0.204/freebuff-linux-x64-baseline.tar.gz";
       flake = false;
     };
     freebuff-desktop-src = {
-      url = "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v0.0.106/Freebuff-0.0.106-linux-x86_64.AppImage";
+      url = "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v0.0.151/Freebuff-0.0.151-linux-x86_64.AppImage";
       flake = false;
     };
   };

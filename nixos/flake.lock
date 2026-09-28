@@ -58,26 +58,26 @@
     "freebuff-cli-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1789075963,
-        "narHash": "sha256-liNMYmtRkKWbKByP2mrQeFmUl0lfm8dVexwyfm21xdA=",
+        "lastModified": 1790451227,
+        "narHash": "sha256-GdXWAhB2PHxD0OQjSIQhbsA77xPNjwaliWYMv/zzfD4=",
         "type": "tarball",
-        "url": "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v0.0.173/freebuff-linux-x64-baseline.tar.gz"
+        "url": "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v0.0.204/freebuff-linux-x64-baseline.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v0.0.173/freebuff-linux-x64-baseline.tar.gz"
+        "url": "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-v0.0.204/freebuff-linux-x64-baseline.tar.gz"
       }
     },
     "freebuff-desktop-src": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-4/4+va5hPUP3LREF9UXhRHgJp4c4BoTaO7HfAKKO648=",
+        "narHash": "sha256-Gwh2sHK9m2zlVHN0bINIUud42Z2x8uDsz6QOYt/T7l4=",
         "type": "file",
-        "url": "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v0.0.106/Freebuff-0.0.106-linux-x86_64.AppImage"
+        "url": "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v0.0.151/Freebuff-0.0.151-linux-x86_64.AppImage"
       },
       "original": {
         "type": "file",
-        "url": "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v0.0.106/Freebuff-0.0.106-linux-x86_64.AppImage"
+        "url": "https://github.com/CodebuffAI/codebuff-community/releases/download/freebuff-desktop-v0.0.151/Freebuff-0.0.151-linux-x86_64.AppImage"
       }
     },
     "llm-agents": {
