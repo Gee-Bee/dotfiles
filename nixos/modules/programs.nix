@@ -50,6 +50,9 @@
         run-shell ${pkgs.tmuxPlugins.power-theme}/share/tmux-plugins/power/tmux-power.tmux
       '';
     };
+    # Not a plain package: the module also opens TCP/UDP 1714-1764, without
+    # which pairing silently fails.
+    kdeconnect.enable = true;
   };
   programs.git = {
     enable = true;
