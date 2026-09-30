@@ -27,6 +27,7 @@
 ## Komentarze
 - Komentarz dotyczący konkretnej linii: na jej końcu lub tuż nad nią — nigdy przy nagłówku bloku; opcja i jej uzasadnienie zmieniają się razem.
 - Komentarz uzasadnia decyzję (dlaczego tak), nie opisuje oczywistego "co robi kod".
+- Obejście odejmowalne po zewnętrznej zmianie (upgrade, backport, bugfix) oznaczaj `TEMPFIX(scope): <co usunąć i kiedy, z linkiem do buga/PR>` — grepowalne po upgradzie (`grep -rn TEMPFIX nixos/`); tam, gdzie to możliwe, kod sam wyłącza obejście (np. próg wersji w nix), a znacznik zostaje jako dokumentacja. Gdy obejście rozlewa się po wielu miejscach, izoluj je w osobnym pliku w `nixos/tempfix/` (nazwa pliku = scope znacznika; import w configuration.nix), by dało się je usunąć w całości. Test, czy obejście już zbędne: zakomentuj import, przebuduj i sprawdź efekt end-to-end — działa? kasujesz plik, nie działa? odkomentowujesz.
 - Każdy komentarz jest atomowy i samowystarczalny: czytelnik pliku nie zna historii git, diffów ani wcześniejszych rozmów. Zakaz fraz typu "bez zmian", "przywrócone", "tymczasowe", "wcześniej", "wg dyskusji".
 - Zwięzłość: domyślnie 1 linia, maksymalnie 2. Jeśli treść się nie mieści — skróć do jednej decyzji, nie tłumacz mechanizmu. Komentarz tylko tam, gdzie kod sam się nie tłumaczy.
 - Po angielsku.

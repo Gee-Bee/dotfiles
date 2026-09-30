@@ -19,6 +19,9 @@ in
     ./modules/services/upgrade-on-shutdown.nix
     ./modules/services/thumbnails-pregeneration.nix
     ./modules/desktop/plasmoids/on-air
+    # tempfix/: self-contained workarounds, remove both lines when fixed (see header of each file)
+    ./tempfix/drkonqi-6.7.nix
+    ./tempfix/wireplumber-LDAC.nix
   ];
 
   # Stateful-data defaults from the initial install release; bump only after reading the release notes.
