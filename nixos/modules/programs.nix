@@ -18,10 +18,17 @@
   programs = {
     firefox.enable = true;
     starship.enable = true;
+    # gpg-agent backs both GPG (pass/qtpass) and SSH: pam_gnupg feeds it the login
+    # password at sddm login and screen unlock, so the passphrase is never re-typed.
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
       pinentryPackage = pkgs.pinentry-qt;
+      settings = {
+        allow-preset-passphrase = true; # required by pam_gnupg presetting
+        default-cache-ttl-ssh = 43200; # 12 h — covers gaps when no unlock happens
+        max-cache-ttl-ssh = 86400; # 24 h hard cap
+      };
     };
     neovim = {
       enable = true;
@@ -53,6 +60,12 @@
     # Not a plain package: the module also opens TCP/UDP 1714-1764, without
     # which pairing silently fails.
     kdeconnect.enable = true;
+  };
+  # pam_gnupg unlocks gpg-agent with the login password; keygrips of the SSH keys
+  # live in ~/.pam-gnupg (user-side, not declarative).
+  security.pam.services = {
+    login.gnupg.enable = true; # sddm substacks login, so this covers graphical login too
+    kde.gnupg.enable = true; # screen lock/unlock
   };
   programs.git = {
     enable = true;
