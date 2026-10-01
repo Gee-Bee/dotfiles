@@ -1,70 +1,55 @@
 # Pixel 3a — Nix-on-Droid
 
-The phone (Google Pixel 3a, aarch64) is managed declaratively with [Nix-on-Droid](https://github.com/nix-community/nix-on-droid). Configuration: this directory (`flake.nix` + `nix-on-droid.nix`). Home Assistant and dropbear come from the nixpkgs binary cache — no compilation on the phone (goodbye pip/cryptography).
+The phone (Google Pixel 3a, aarch64) is managed declaratively with [Nix-on-Droid](https://github.com/nix-community/nix-on-droid). Configuration: this directory (`flake.nix` + `nix-on-droid.nix`). Home Assistant and dropbear come from the nixpkgs binary cache — no compilation on the phone.
 
-## Nix-on-Droid install (one-off, manual)
+## One-off install (manual)
 
-1. Install **Nix-on-Droid** from F-Droid (`com.termux.nix`) — a Termux fork with nix built in; first launch downloads the bootstrap (hundreds of MB). Leave the phone alone after install — the first-start wizard's flake question is answered by the seeder below.
+1. Install **Nix-on-Droid** from F-Droid (`com.termux.nix`); first launch downloads the bootstrap — tap OK on the "Bootstrap zipball location" dialog, then let the initial build finish (10–20 min on one core, it keeps evaluating: a progress line with a growing download counter is normal). If a dialog ever asks about backup, "Backup Allowed" stays false — that is fine.
 2. Android → Apps → Nix-on-Droid → Battery: **Unrestricted** (otherwise Android kills the services).
-3. Seed and deploy — **`nod/deploy.sh --seed`** (USB debugging on, phone plugged into the laptop, **screen unlocked** — that unlock is the only human step):
+3. Unlock the phone, plug it in (USB debugging on), then from the repo root:
 
 ```bash
 nod/deploy.sh --seed
 ```
 
-The script launches the app and types one base64 line into its shell over adb (`input text`; base64 carries no spaces or shell metacharacters, so it survives unquoted). The payload writes a minimal dropbear config into the app's private `$HOME` (no /sdcard) and switches; the script waits for dropbear, then rsyncs the flake and switches to it. The seed is typed repeatedly while the first-ever app launch is still downloading its bootstrap — the payload is idempotent.
+The script pushes the seed payload over adb into the app's external dir (`/sdcard/Android/data/com.termux.nix/files/`) and types **two short lines** into the app's shell: `cd /sdcard/android/data/com.termux.nix/files` + `sh phone-deploy.sh`. The app dir is the only choice: at the /sdcard root adb-created files get `root:everybody` FUSE pinning and the app cannot read them (chmod is ignored by FUSE).
 
-Manual paste fallback (adb typing broken?): the script prints the same line when it gives up — paste it into the app's shell yourself, then rerun `nod/deploy.sh --seed`.
+Typing rules (all hard-won against silent mangling, see deploy.sh `type_line`):
 
-From the laptop (host firewall only blocks inbound — outgoing to the phone is fine):
+- plain `input text` has been seen eating slashes and mangling `%s` — everything goes out as raw `input keyevent` batches instead,
+- `input keycombination` inserts the key as a plain character on this device (a shift-combo produced `ash` from `sh`) — capitals must be avoided, not shifted; the `/sdcard` FUSE mount is case-insensitive, so paths are typed all-lowercase,
+- lines over ~45 characters lose a keystroke at the terminal's wrap column — hence `cd` (44 chars) + bare `sh phone-deploy.sh` instead of one absolute path,
+- before typing: wake the screen and require `mCurrentFocus` to name `com.termux.nix` (keys land in whatever window holds focus),
+- delivery is verified by effect, not echo: the helper writes `$EXT/deploy-started` as its first action, missing marker → retry. The payload is idempotent (double-run guard inside).
 
-```bash
-rsync -avz --delete --exclude '.git' -e "ssh -p 8022" \
-  ~/src/dotfiles/nod/ <u0_aNNN>@<phone-ip>:~/src/dotfiles/nod/
-```
+The helper copies the flake into the app home and runs the first `nix-on-droid switch` detached (10–20 min on one core); deploy.sh polls the progress file over adb and finishes with an ssh check.
 
-4. First switch — fetches ~150 MB from the cache (163 HA paths, zero compilation) and starts HA (activation writes a default `configuration.yaml`), dropbear (8022) and wake-lock. This is part of the seeded deploy; on an already-ssh-reachable phone it is just:
-
-```bash
-nix-on-droid switch --flake ~/src/dotfiles/nod
-```
-
-adb notes: `am startservice` RUN_COMMAND intents don't work here — the service is permission-gated, the `shell` user can't be granted the custom permission, and NOD lacks the `allow-external-apps` property anyway. Typing into the app goes through `monkey` (launch) + `input text` (payload), which need no permission beyond shell; the payload still travels base64-encoded and lands in the app's private `$HOME`.
-
-## Deploying changes from the laptop
-
-`nod/deploy.sh` does it all — discovers uid (owner of the app's `/data/data/com.termux.nix`) and ip (`ip addr`) over adb, rsyncs, switches:
+## Deploying changes
 
 ```bash
-nod/deploy.sh   # overrides: NOD_UID=u0_aNNN NOD_IP=a.b.c.d nod/deploy.sh
+nod/deploy.sh        # override: NOD_IP=a.b.c.d nod/deploy.sh
 ```
 
-Equivalent by hand (uid changes on reinstall — `whoami` on the phone; ip drifts with DHCP; update the entry in `~/.ssh/config` on the laptop when it does):
+Ssh logs in as `nix-on-droid` (the user inside the NOD proot — the android uid is **not** an ssh login) on port 8022. Ip comes from adb (`ip addr`); without wifi the script falls back to `adb forward tcp:8022 tcp:8022` → `127.0.0.1` (dhcp-proof, usb). Files are copied per-file with `ssh 'cat > file'` — the phone needs no rsync.
 
-```bash
-rsync -avz --delete --exclude '.git' -e "ssh -p 8022" \
-  ~/src/dotfiles/nod/ <u0_aNNN>@<phone-ip>:~/src/dotfiles/nod/
-ssh -p 8022 <u0_aNNN>@<phone-ip> 'nix-on-droid switch --flake ~/src/dotfiles/nod'
-```
+The switch runs **detached** (`nohup` + `~/switch.rc` marker): its activation restarts dropbear, which would otherwise kill the ssh session carrying the switch itself.
 
-`<phone-ip>` — DHCP drifts; read it from the laptop with `adb shell ip -4 addr show` (that's what deploy.sh does), or `ifconfig` on the phone.
+On the t530, `nixos/modules/nix-on-droid.nix` defines a device-agnostic `nod` ssh alias (`ssh nod` after `adb forward tcp:8022 tcp:8022`); the login user goes on the alias's `User` line — uid-hostile on purpose, since `nix-on-droid` survives reinstalls while `u0_aNNN` does not.
 
-On the t530, `nixos/modules/nix-on-droid.nix` defines a device-agnostic `nod` ssh alias instead of any `~/.ssh/config` entry: `adb forward tcp:8022 tcp:8022` maps the connected phone's 8022 onto localhost, so the alias survives DHCP drift and phone swaps — `ssh -l <u0_aNNN> nod`. Swapping the device (e.g. to an android-server box) changes nothing on the laptop: install Nix-on-Droid there and rerun `nod/deploy.sh --seed`.
+## What runs on the phone
 
-## What starts on login
+`build.activation.startServices` on every `nix-on-droid switch`:
 
-`build.activation.startServices` runs on every `nix-on-droid switch`/login:
+- HA, config in `~/.config/home-assistant` (persistent), UI: `http://<phone-ip>:8123`,
+- stock dropbear from the nixpkgs cache on 8022, started with a bogus argv0 (`bash -c 'exec -a /nonexistent …'`): the 2022.83 build re-execs every connection child via fexecve/execveat, which proot cannot translate — the child dies before the ssh banner (exit 182); svr-main.c falls back to plain fork when `open(argv[0])` fails, so the stock binary needs no rebuild. Host key lives in `$HOME/.config/dropbear_host_key` (/etc is regenerated every switch),
+- the login shell is re-added to `/etc/shells` every activation — dropbear rejects shells missing from that list (`invalid shell, rejected`), and NOD ships no file with the nix-store bash in it; the shell itself is the static busybox sh (a dynamic shell dies the same fexecve way).
 
-- `termux-wake-lock` — holds the CPU (requires Unrestricted battery),
-- HA with config in `~/.config/home-assistant` (persistent), UI: `http://<phone-ip>:8123`,
-- dropbear on port 8022 with the laptop key (`~/.ssh/authorized_keys`, written from the config).
-
-After a full phone reboot: open the Nix-on-Droid app once (that starts the session) — services come up from activation. The app also has the "run at startup" permission.
+After a full phone reboot: open the Nix-on-Droid app once — services come up from activation.
 
 ## Config changes
 
-Edit `nix-on-droid.nix` → `nix-on-droid switch`. Rollback: `nix-on-droid rollback`. Generations and the store live on the phone; `nix-on-droid-collect-garbage` when space runs out.
+Edit `nix-on-droid.nix` → `nod/deploy.sh` (or `nix-on-droid switch --flake ~/src/dotfiles/nod` on the phone). Rollback: `nix-on-droid rollback`; generations live on the phone, `nix-on-droid-collect-garbage` frees space.
 
 ## Later
 
-TooGoodToGo: HA integration instead of standalone scripts — HACS with custom_components in `~/.config/home-assistant/custom_components/` (the directory is persistent in home).
+TooGoodToGo: HA integration instead of standalone scripts — HACS with custom_components in `~/.config/home-assistant/custom_components/` (persistent in home).
