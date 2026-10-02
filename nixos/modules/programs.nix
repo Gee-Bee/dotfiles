@@ -18,17 +18,16 @@
   programs = {
     firefox.enable = true;
     starship.enable = true;
-    # gpg-agent backs both GPG (pass/qtpass) and SSH: pam_gnupg feeds it the login
-    # password at sddm login and screen unlock, so the passphrase is never re-typed.
     gnupg.agent = {
       enable = true;
-      enableSSHSupport = true;
       pinentryPackage = pkgs.pinentry-qt;
-      settings = {
-        allow-preset-passphrase = true; # required by pam_gnupg presetting
-        default-cache-ttl-ssh = 43200; # 12 h — covers gaps when no unlock happens
-        max-cache-ttl-ssh = 86400; # 24 h hard cap
-      };
+    };
+    ssh = {
+      # plain ssh-agent, SSH kept out of gpg-agent (duplicated keys + TTLs);
+      # ksshaskpass stores the passphrase in the KWallet pam_kwallet opens at login
+      startAgent = true;
+      askPassword = "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
+      extraConfig = "AddKeysToAgent yes"; # key loads into the agent on first use
     };
     neovim = {
       enable = true;
@@ -61,12 +60,8 @@
     # which pairing silently fails.
     kdeconnect.enable = true;
   };
-  # pam_gnupg unlocks gpg-agent with the login password; keygrips of the SSH keys
-  # live in ~/.pam-gnupg (user-side, not declarative).
-  security.pam.services = {
-    login.gnupg.enable = true; # sddm substacks login, so this covers graphical login too
-    kde.gnupg.enable = true; # screen lock/unlock
-  };
+  # kwallet-pam opens the wallet with the login password (sddm substacks login)
+  security.pam.services.login.kwallet.enable = true;
   programs.git = {
     enable = true;
     package = pkgs.gitFull;
