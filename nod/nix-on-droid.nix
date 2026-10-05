@@ -16,8 +16,10 @@
 
   nix.extraOptions = "experimental-features = nix-command flakes";
 
-  # bash provides `exec -a` for the dropbear argv0 trick (see startServices)
-  environment.packages = [ pkgs.pkgsStatic.busybox pkgs.bash pkgs.tmux pkgs.vim pkgs.git ];
+  # NOD always merges bashInteractive+coreutils+less+cacert+nix into this
+  # list — busybox here only collides in the path buildEnv (sh, [); it stays
+  # solely as user.shell, which references the store path, not the buildEnv
+  environment.packages = [ pkgs.tmux pkgs.vim pkgs.git ];
 
   # Dropbear instead of openssh: no privilege-separation user needed, so it
   # runs under proot without root. Keys mirror the NixOS host layout.

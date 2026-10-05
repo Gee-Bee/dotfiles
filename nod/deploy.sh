@@ -141,17 +141,52 @@ if [ "${1:-}" = "--seed" ]; then
     cd /sdcard/Android/data/com.termux.nix/files
     sh phone-deploy.sh"
   echo "marker ok — switch running on the phone (eval takes 10–20 min)…"
+  echo "watch live: adb shell tail -f \"$EXT/switch-out.log\""
   rc=""
-  for _ in $(seq 1 150); do
+  seen_alive=0
+  dead=0
+  start=$SECONDS
+  # 360 × 20 s = 2 h: a from-scratch run downloads the whole closure over wifi
+  for _ in $(seq 1 360); do
     last=$(adbsh shell "tail -n 1 '$EXT/deploy-progress.txt' 2>/dev/null" | tr -d '\r' || true)
     case "$last" in
       *"switch rc="*) rc=${last##*rc=}; break ;;
     esac
-    printf '\r  %s' "${last:-…}   "
+    # eval is silent for minutes — liveness comes from ps (guest argv needs -o
+    # ARGS); gone only after a sighting, so adb hiccups cannot abort a live run
+    logline=$(adbsh shell "tail -n 1 '$EXT/switch-out.log' 2>/dev/null" | tr -d '\r')
+    psout=$(adbsh shell "ps -A -o ARGS 2>/dev/null" | tr -d '\r')
+    state=starting
+    case $psout in
+      "") state='adb?' ;;
+      *nix/store*) seen_alive=1; dead=0; state=alive ;;
+      *)
+        if [ "$seen_alive" = 1 ]; then
+          dead=$((dead + 1))
+          if [ "$dead" -ge 2 ]; then state=GONE; fi
+        else
+          dead=0
+        fi
+        ;;
+    esac
+    elapsed=$((SECONDS - start))
+    printf '\r\033[K  %02d:%02d  switch %-8s  |  %s' \
+      $((elapsed / 60)) $((elapsed % 60)) "$state" "${logline:0:70}"
+    if [ "$state" = GONE ]; then
+      echo
+      adbsh shell "tail -n 5 '$EXT/switch-out.log' 2>/dev/null" | sed 's/^/  | /' || true
+      die "switch process disappeared without rc — see $EXT/switch-out.log"
+    fi
     sleep 20
   done
   echo
-  [ "$rc" = "0" ] || die "switch on the phone failed (rc=${rc:-timeout}) — see ~/switch.log in the app's shell"
+  [ "$rc" = "0" ] || {
+    adbsh shell "tail -n 5 '$EXT/switch-out.log' 2>/dev/null" | sed 's/^/  | /' || true
+    die "switch on the phone failed (rc=${rc:-timeout}) — full log: $EXT/switch-out.log"
+  }
+  # a fresh install generates a new host key and accept-new does not override
+  # a stale known_hosts entry — drop the old one or verify fails misleadingly
+  ssh-keygen -R "[${HOST}]:8022" >/dev/null 2>&1 || true
   echo "switch finished (rc=0) — verifying ssh…"
   for _ in $(seq 1 6); do
     if phone true 2>/dev/null; then break; fi
